@@ -22,13 +22,17 @@ public class RobotCore extends Robot {
     Telemetry telemetry;
     GamepadEx driveController;
     GamepadEx manipController;
-
+    SequentialCommandGroup autoSchedule;
     // Subsystems
     Chassis chassis;
+    // Paths
+    Action toStage1;
+    Action toStage2;
+    Action toStage3;
 
     // OpMode type enumerator
     public enum OpModeType {
-        TELEOP, RED_AUTO, BLUE_AUTO
+        TELEOP, AUTO
     }
 
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
@@ -55,11 +59,8 @@ public class RobotCore extends Robot {
             case TELEOP:
                 initTeleOp();
                 break;
-            case RED_AUTO:
-                initRedAuto();
-                break;
-            case BLUE_AUTO:
-                initBlueAuto();
+            case AUTO:
+                initAuto();
                 break;
         }
     }
@@ -68,11 +69,7 @@ public class RobotCore extends Robot {
         // Add teleop code here
     }
 
-    private void initRedAuto() {
-        Action toStage1;
-        Action toStage2;
-        Action toStage3;
-
+    private void initAuto() {
         toStage1 = chassis.actionBuilder(chassis.getPoseEstimate())
                 .splineToSplineHeading(new Pose2d(36, -12, 0), Math.PI / 2.0)
                 .build();
@@ -84,14 +81,26 @@ public class RobotCore extends Robot {
         toStage3 = chassis.actionBuilder(chassis.getPoseEstimate())
                 .splineToSplineHeading(new Pose2d(36, 12, 0), Math.PI / 2.0)
                 .build();
-
-        CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-            new ActionCommand(toStage1, chassis)
-        ));
     }
 
-    private void initBlueAuto() {
+    public void scheduleAuto() {
+        Action toStage;
+        switch (Global.randomization) {
+            case 1:
+                toStage = toStage1;
+                break;
+            case 2:
+                toStage = toStage2;
+                break;
+            default:
+                toStage = toStage3;
+                break;
+        }
 
+        autoSchedule = new SequentialCommandGroup(
+                new ActionCommand(toStage, chassis)
+        );
+        CommandScheduler.getInstance().schedule(autoSchedule);
     }
 
     public void updateTelemetry() {
