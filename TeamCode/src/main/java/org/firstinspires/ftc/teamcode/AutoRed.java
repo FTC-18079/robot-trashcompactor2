@@ -1,20 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.*;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.Global;
 
-@TeleOp(name = "TeleOp", group = "OpModes")
-public class TeleOpMode extends LinearOpMode {
+import java.lang.Math;
+
+@Autonomous(name = "Red Auto", group = "Autos")
+public class AutoRed extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = Global.robotPose;
+        Pose2d initialPose = new Pose2d(12.0, -61.34, Math.toRadians(90));
 
         // Init robot
         RobotCore robot = new RobotCore(
-                RobotCore.OpModeType.TELEOP,
+                RobotCore.OpModeType.RED_AUTO,
                 hardwareMap,
                 telemetry,
                 gamepad1,
