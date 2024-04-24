@@ -39,6 +39,7 @@ public class Auto extends LinearOpMode {
             telemetry.update();
         }
 
+        if (Global.alliance == null) Global.alliance = Global.Alliance.RED;
         telemetry.addData("Status", "Configured");
         telemetry.update();
 

@@ -29,6 +29,7 @@ public class RobotCore extends Robot {
     Action toStage1;
     Action toStage2;
     Action toStage3;
+    Action toPark;
 
     // OpMode type enumerator
     public enum OpModeType {
@@ -81,24 +82,21 @@ public class RobotCore extends Robot {
         toStage3 = chassis.actionBuilder(chassis.getPoseEstimate())
                 .splineToSplineHeading(new Pose2d(36, 12, 0), Math.PI / 2.0)
                 .build();
+
+        toPark = chassis.actionBuilder(chassis.getPoseEstimate())
+                .splineToSplineHeading(new Pose2d(40, 24, Math.toRadians(180)), Math.PI / 2.0)
+                .build();
     }
 
     public void scheduleAuto() {
         Action toStage;
-        switch (Global.randomization) {
-            case 1:
-                toStage = toStage1;
-                break;
-            case 2:
-                toStage = toStage2;
-                break;
-            default:
-                toStage = toStage3;
-                break;
-        }
+        if (Global.randomization == 1) toStage = toStage1;
+        else if (Global.randomization == 2) toStage = toStage2;
+        else toStage = toStage3;
 
         autoSchedule = new SequentialCommandGroup(
-                new ActionCommand(toStage, chassis)
+                new ActionCommand(toStage, chassis),
+                new ActionCommand(toPark, chassis)
         );
         CommandScheduler.getInstance().schedule(autoSchedule);
     }
