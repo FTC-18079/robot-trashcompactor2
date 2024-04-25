@@ -22,6 +22,7 @@ public class RobotCore extends Robot {
     Telemetry telemetry;
     GamepadEx driveController;
     GamepadEx manipController;
+    Pose2d initialPose;
     SequentialCommandGroup autoSchedule;
     // Subsystems
     Chassis chassis;
@@ -41,18 +42,23 @@ public class RobotCore extends Robot {
         this.telemetry.addData("Status", "Initializing Robot");
         this.telemetry.update();
 
+        Global.robotPose = initialPose;
+        this.initialPose = initialPose;
         this.hardwareMap = hardwareMap;
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
-        // Init subsystems
-        chassis = new Chassis(hardwareMap, telemetry, initialPose);
-        Global.robotPose = initialPose;
+        // Initialize subsystems
+        initSubsystems();
 
         // Set up OpMode
         setupOpMode(type);
         this.telemetry.addData("Status", "Robot Initialized");
         this.telemetry.update();
+    }
+
+    public void initSubsystems() {
+        chassis = new Chassis(hardwareMap, telemetry, initialPose);
     }
 
     private void setupOpMode(OpModeType type) {
