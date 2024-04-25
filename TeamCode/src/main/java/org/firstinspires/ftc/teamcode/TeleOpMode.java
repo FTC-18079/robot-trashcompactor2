@@ -27,7 +27,6 @@ public class TeleOpMode extends LinearOpMode {
         // Run until end or stopped
         while(opModeIsActive() || !isStopRequested()) {
             robot.run();
-            robot.updateTelemetry();
         }
 
         // Store pose

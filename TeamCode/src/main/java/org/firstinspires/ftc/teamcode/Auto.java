@@ -33,7 +33,7 @@ public class Auto extends LinearOpMode {
             // Print telemetry
             telemetry.addData("Status", "Configuring Autonomous");
             telemetry.addData("Controls", "Delay: Up & Down.    Alliance: Left & Right Bumper.");
-            telemetry.addData("Selected Alliance", Global.alliance == Global.Alliance.RED ? "Red" : "Blue");
+            telemetry.addData("Selected Alliance", Global.alliance == Global.Alliance.RED ? "\uD83D\uDD34 Red" : "\uD83D\uDD35 Blue");
             telemetry.addData("Auto delay", delayMs);
             telemetry.addLine("Press options to finish");
             telemetry.update();
@@ -66,11 +66,10 @@ public class Auto extends LinearOpMode {
         // Run until end or stopped
         while(opModeIsActive() && !isStopRequested()) {
             robot.run();
-            robot.updateTelemetry();
         }
 
         // Store pose
-        Global.robotPose = robot.chassis.getPoseEstimate();
+        Global.field.setRobotPose(robot.chassis.getPoseEstimate());
         robot.reset();
     }
 }

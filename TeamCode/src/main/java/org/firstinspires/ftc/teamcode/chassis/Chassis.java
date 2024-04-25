@@ -5,15 +5,17 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
+import org.firstinspires.ftc.teamcode.util.Global;
 
 public class Chassis extends SubsystemBase {
     HardwareMap hMap;
     Telemetry telemetry;
     MecanumDrive drive;
-    public Chassis(HardwareMap hMap, Telemetry telemetry, Pose2d initialPose) {
-        this.hMap = hMap;
-        this.telemetry = telemetry;
+    public Chassis(RobotCore robot, Pose2d initialPose) {
+        this.hMap = robot.getHardwareMap();
+        this.telemetry = robot.getTelemetry();
         drive = new MecanumDrive(hMap, initialPose);
     }
 
@@ -27,5 +29,10 @@ public class Chassis extends SubsystemBase {
 
     public TrajectoryActionBuilder actionBuilder(Pose2d initialPose) {
         return drive.actionBuilder(initialPose);
+    }
+
+    @Override
+    public void periodic() {
+        Global.field.setRobotPose(getPoseEstimate());
     }
 }

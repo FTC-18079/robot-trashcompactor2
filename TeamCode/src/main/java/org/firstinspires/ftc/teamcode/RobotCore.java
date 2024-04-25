@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
+import org.firstinspires.ftc.teamcode.util.Field2d;
 import org.firstinspires.ftc.teamcode.util.Global;
 
 import java.lang.Math;
@@ -42,11 +43,12 @@ public class RobotCore extends Robot {
         this.telemetry.addData("Status", "Initializing Robot");
         this.telemetry.update();
 
-        Global.robotPose = initialPose;
-        this.initialPose = initialPose;
         this.hardwareMap = hardwareMap;
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
+
+        this.initialPose = initialPose;
+        Global.field.setRobotPose(initialPose);
 
         // Initialize subsystems
         initSubsystems();
@@ -58,7 +60,7 @@ public class RobotCore extends Robot {
     }
 
     public void initSubsystems() {
-        chassis = new Chassis(hardwareMap, telemetry, initialPose);
+        chassis = new Chassis(this, initialPose);
     }
 
     private void setupOpMode(OpModeType type) {
@@ -107,7 +109,17 @@ public class RobotCore extends Robot {
         CommandScheduler.getInstance().schedule(autoSchedule);
     }
 
-    public void updateTelemetry() {
+    public HardwareMap getHardwareMap() {
+        return this.hardwareMap;
+    }
+
+    public Telemetry getTelemetry() {
+        return this.telemetry;
+    }
+
+    @Override
+    public void run() {
+        CommandScheduler.getInstance().run();
         this.telemetry.update();
     }
 }
