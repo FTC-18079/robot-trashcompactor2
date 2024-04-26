@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.Global;
 public class TeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = Global.robotPose;
+        Pose2d initialPose = Global.field.getRobotPose();
 
         // Init robot
         RobotCore robot = new RobotCore(
@@ -30,7 +30,7 @@ public class TeleOpMode extends LinearOpMode {
         }
 
         // Store pose
-        Global.robotPose = robot.chassis.getPoseEstimate();
+        Global.field.setRobotPose(robot.chassis.getPoseEstimate())();
         robot.reset();
     }
 }
