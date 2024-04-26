@@ -30,7 +30,7 @@ public class TeleOpMode extends LinearOpMode {
         }
 
         // Store pose
-        Global.field.setRobotPose(robot.chassis.getPoseEstimate())();
+        Global.field.setRobotPose(robot.chassis.getPoseEstimate());
         robot.reset();
     }
 }
