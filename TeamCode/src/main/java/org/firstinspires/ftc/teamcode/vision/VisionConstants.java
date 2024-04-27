@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.vision;
 
 public class VisionConstants {
     // Arducam lens intrinsics
-    public final double arducam_fx = 547.622;
-    public final double arducam_fy = 547.622;
-    public final double arducam_cx = 324.306;
-    public final double arducam_cy = 243.746;
+    public static final double arducam_fx = 547.622;
+    public static final double arducam_fy = 547.622;
+    public static final double arducam_cx = 324.306;
+    public static final double arducam_cy = 243.746;
 
     // Object detection
     public static final String BLUE_MODEL_ASSET = "blueObject_v2.tflite";
