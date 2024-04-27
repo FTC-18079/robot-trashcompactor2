@@ -98,8 +98,8 @@ public class RobotCore extends Robot {
 
     public void scheduleAuto() {
         Action toStage;
-        if (Global.randomization == 1) toStage = toStage1;
-        else if (Global.randomization == 2) toStage = toStage2;
+        if (Global.randomization == Global.Randomization.LEFT) toStage = toStage1;
+        else if (Global.randomization == Global.Randomization.CENTER) toStage = toStage2;
         else toStage = toStage3;
 
         autoSchedule = new SequentialCommandGroup(

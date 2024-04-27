@@ -7,7 +7,10 @@ public class Global {
     public enum Alliance {
         RED, BLUE
     }
+    public enum Randomization {
+        LEFT, CENTER, RIGHT
+    }
     public static Field2d field = new Field2d();
     public static Alliance alliance;
-    public static int randomization;
+    public static Randomization randomization;
 }
