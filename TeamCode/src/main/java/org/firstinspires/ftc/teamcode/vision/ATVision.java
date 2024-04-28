@@ -4,6 +4,7 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class ATVision {
     public AprilTagProcessor tagProcessor;
     public VisionPortal visionPortal;
-    public ATVision(HardwareMap hMap, boolean liveView) {
+    public ATVision(HardwareMap hMap, Telemetry telemetry) {
         // Create AT Processor
         tagProcessor = new AprilTagProcessor.Builder()
                 .setLensIntrinsics(VisionConstants.arducam_fx, VisionConstants.arducam_fy, VisionConstants.arducam_cx, VisionConstants.arducam_cy)
