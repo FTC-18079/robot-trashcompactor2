@@ -44,8 +44,8 @@ public class RobotCore extends Robot {
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        atVision = new ATVision(hardwareMap, this.telemetry);
-        while (atVision.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+        atVision = new ATVision(hardwareMap);
+        while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Status", "Initializing AprilTags");
             telemetry.update();
         }
@@ -129,7 +129,7 @@ public class RobotCore extends Robot {
     @Override
     public void run() {
         CommandScheduler.getInstance().run();
-        this.telemetry.addData("AprilTag FPS", atVision.visionPortal.getFps());
+        this.telemetry.addData("AprilTag FPS", atVision.getFPS());
         this.telemetry.update();
     }
 }

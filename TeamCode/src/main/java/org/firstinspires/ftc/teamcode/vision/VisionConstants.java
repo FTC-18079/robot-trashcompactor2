@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import com.acmerobotics.roadrunner.Vector2d;
+
 public class VisionConstants {
+    public static Vector2d arducamPose = new Vector2d(3, 3);
     // Arducam lens intrinsics
     public static final double arducam_fx = 547.622;
     public static final double arducam_fy = 547.622;

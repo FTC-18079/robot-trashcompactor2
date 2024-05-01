@@ -16,6 +16,7 @@ public class Chassis extends SubsystemBase {
     public Chassis(RobotCore robot, Pose2d initialPose) {
         this.hMap = robot.getHardwareMap();
         this.telemetry = robot.getTelemetry();
+        // TODO: change to use ATDrive after tuning MecanumDrive
         drive = new MecanumDrive(hMap, initialPose);
     }
 
