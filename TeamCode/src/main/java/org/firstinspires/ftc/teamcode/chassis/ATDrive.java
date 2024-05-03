@@ -23,6 +23,19 @@ public class ATDrive extends MecanumDrive {
         this.aprilTag = aprilTag;
     }
 
+    public void setPoseEstimate(Pose2d newPose) {
+        if (newPose != null) {
+            pose = newPose;
+            poseHistory.add(pose);
+
+            while (poseHistory.size() > 100) {
+                poseHistory.removeFirst();
+            }
+
+            estimatedPoseWriter.write(new PoseMessage(pose));
+        }
+    }
+
     @Override
     // Method for updating pose estimate with AprilTags
     public PoseVelocity2d updatePoseEstimate() {

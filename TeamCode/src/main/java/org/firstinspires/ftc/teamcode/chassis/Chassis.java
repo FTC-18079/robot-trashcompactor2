@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.util.Global;
 
 public class Chassis extends SubsystemBase {
@@ -20,8 +21,20 @@ public class Chassis extends SubsystemBase {
         drive = new MecanumDrive(hMap, initialPose);
     }
 
-    public void setPoseEstimate() {
+    public void driveFieldCentric(double x, double y, double rot) {
 
+    }
+
+    public void setDrivePowers(double x, double y, double rot) {
+
+    }
+
+    public double responseCurve(double value) {
+        return 0.0;
+    }
+
+    public void setPoseEstimate(Pose2d pose) {
+        // drive.setPoseEstimate(pose);
     }
 
     public Pose2d getPoseEstimate() {
