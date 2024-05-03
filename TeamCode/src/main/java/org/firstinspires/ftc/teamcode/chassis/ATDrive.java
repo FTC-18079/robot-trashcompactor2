@@ -7,22 +7,35 @@ import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
 
-// This class serves as an extension of Roadrunner's MecanumDrive class with AprilTag localization
-// Taken from https://github.com/jdhs-ftc/2023, modified to our use
+/**
+ * This class serves as an extension of Roadrunner's {@link MecanumDrive} class with {@link ATVision} localization.
+ * <p>
+ * Taken from https://github.com/jdhs-ftc/2023, modified to our use
+ */
 public class ATDrive extends MecanumDrive {
     public ATVision aprilTag;
     private Pose2d localizerPose;
     private Vector2d filteredVector;
+
+    /**
+     *
+     * @param hMap the hardwareMap instance needed to set up hardware
+     * @param initialPose the starting position of the robot on the field
+     * @param aprilTag the {@link ATVision} instance to get tags from
+     */
     public ATDrive(HardwareMap hMap, Pose2d initialPose, ATVision aprilTag) {
         super(hMap, initialPose);
         this.aprilTag = aprilTag;
     }
 
+    /**
+     * Relocalizes robot
+     * @param newPose the new position of the robot
+     */
     public void setPoseEstimate(Pose2d newPose) {
         if (newPose != null) {
             pose = newPose;
@@ -36,6 +49,10 @@ public class ATDrive extends MecanumDrive {
         }
     }
 
+    /**
+     * Updates position estimate with the visible tags by passing through a Kalman filter
+     * @return the robot's velocity
+     */
     @Override
     // Method for updating pose estimate with AprilTags
     public PoseVelocity2d updatePoseEstimate() {
