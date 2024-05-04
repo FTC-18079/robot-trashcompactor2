@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.chassis;
 
+import static org.firstinspires.ftc.teamcode.util.Global.Alliance.BLUE;
+
 import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -26,33 +28,27 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
-     * Drives the robot with heading in relation to the field
-     * @param drive the forward movement input
-     * @param strafe the strafe movement input
+     * Drives the robot
+     * @param x the strafe movement input
+     * @param y the forward movement input
      * @param turn the rotation movement input
      */
-    public void driveFieldCentric(double drive, double strafe, double turn) {
-        Vector2d angleVector = this.drive.pose.heading.vec();
-        double angle = -Math.atan2(angleVector.y, angleVector.x);
+    public void setDrivePowers(double x, double y, double turn) {
+        Vector2d input = new Vector2d(-y, -x);
+        double rotationAmount = -drive.pose.heading.log();
 
-        double rotatedX = strafe * Math.cos(angle) - drive * Math.sin(angle);
-        double rotatedY = strafe * Math.sin(angle) + drive * Math.cos(angle);
+        if (isFieldCentric) {
+            if (Global.alliance == BLUE) rotationAmount = rotationAmount - Math.toRadians(90);
+            else rotationAmount = rotationAmount + Math.toRadians(90);
 
-        setDrivePowers(rotatedY, rotatedX, turn);
-    }
+            input = Rotation2d.fromDouble(rotationAmount).times(new Vector2d(input.x, input.y));
+        }
 
-    /**
-     * Drives the robot with heading in relation to itself
-     * @param drive the forward movement input
-     * @param strafe the strafe movement input
-     * @param turn the rotation movement input
-     */
-    public void setDrivePowers(double drive, double strafe, double turn) {
         PoseVelocity2d velocity = new PoseVelocity2d(
                 new Vector2d(
-                        -drive,
-                        strafe
-                ), turn
+                        input.x,
+                        input.y
+                ), -turn
         );
         this.drive.setDrivePowers(velocity);
     }

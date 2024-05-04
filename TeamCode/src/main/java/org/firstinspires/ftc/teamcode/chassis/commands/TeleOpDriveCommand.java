@@ -20,10 +20,6 @@ public class TeleOpDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (chassis.isFieldCentric()) {
-            chassis.driveFieldCentric(y.getAsDouble(), x.getAsDouble(), rot.getAsDouble());
-        } else {
-            chassis.setDrivePowers(y.getAsDouble(), x.getAsDouble(), rot.getAsDouble());
-        }
+        chassis.setDrivePowers(y.getAsDouble(), x.getAsDouble(), rot.getAsDouble());
     }
 }
