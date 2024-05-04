@@ -30,7 +30,7 @@ public class RobotCore extends Robot {
     GamepadEx manipController;
     Pose2d initialPose;
     SequentialCommandGroup autoSchedule;
-    ATVision atVision;
+    public ATVision atVision;
     // Subsystems
     Chassis chassis;
     // Commands
