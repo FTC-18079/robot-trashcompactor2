@@ -28,7 +28,6 @@ public class TfodPipeline {
         tfodProcessor.setZoom(VisionConstants.ZOOM);
 
         // Create vision processor
-        // TODO: Figure out why enabling LiveView crashes code upon closing portal
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hMap.get(WebcamName.class, RobotMap.CAMERA_OBJECT))
                 .setCameraResolution(new Size(640,480))

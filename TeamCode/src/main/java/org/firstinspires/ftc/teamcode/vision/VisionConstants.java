@@ -8,8 +8,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 
 public class VisionConstants {
+    // Kalman coefficients
+    public static double Q = 0.1;
+    public static double R = 0.4;
+
     // AprilTag camera position
-    public static Vector2d arducamPose = new Vector2d(3, 3); // TODO: use not made-up numbers
+    public static Vector2d arducamPose = new Vector2d(3, 3); // TODO: use not made-up numbers :skull:
 
     // Arducam lens intrinsics
     public static final double arducam_fx = 547.622;

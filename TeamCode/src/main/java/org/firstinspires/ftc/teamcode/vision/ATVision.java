@@ -23,6 +23,7 @@ public class ATVision {
     private AprilTagProcessor tagProcessor;
     private VisionPortal visionPortal;
     public AprilTagDetection lastDetection;
+
     public ATVision(HardwareMap hMap) {
         // Create AT Processor
         tagProcessor = new AprilTagProcessor.Builder()

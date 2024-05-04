@@ -9,7 +9,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.util.KalmanFilter;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
+import org.firstinspires.ftc.teamcode.vision.VisionConstants;
 
 /**
  * This class serves as an extension of Roadrunner's {@link MecanumDrive} class with {@link ATVision} localization.
@@ -20,6 +22,7 @@ public class ATDrive extends MecanumDrive {
     public ATVision aprilTag;
     private Pose2d localizerPose;
     private Vector2d filteredVector;
+    private final KalmanFilter.Vector2dKalmanFilter filter;
 
     /**
      *
@@ -30,6 +33,9 @@ public class ATDrive extends MecanumDrive {
     public ATDrive(HardwareMap hMap, Pose2d initialPose, ATVision aprilTag) {
         super(hMap, initialPose);
         this.aprilTag = aprilTag;
+
+        // Position filter
+        filter = new KalmanFilter.Vector2dKalmanFilter(VisionConstants.Q, VisionConstants.R);
     }
 
     /**
@@ -64,14 +70,13 @@ public class ATDrive extends MecanumDrive {
         if (aprilVector != null) {
             // If tags are visible, use the apriltag position with localizer heading
             // Input the change from odometry with the april absolute pose into the kalman filter
-            filteredVector = new Vector2d(0, 0); // TODO: replace this with a Kalman filter, filter.update(twist.value(), aprilVector);
+            filteredVector = filter.update(twist.value(), aprilVector);
             // Then we add the filtered position to the localizer heading as a pose
-            // TODO: This currently uses just AT pose. aprilVector should be switched for filteredVector to use kalman filter once it's added.
-            pose = new Pose2d(aprilVector, localizerPose.heading);
+            pose = new Pose2d(filteredVector, localizerPose.heading);
         } else {
             // If no tags are visible, use the localizer position to update the kalman filter
-            // TODO: uncomment this once we actually have a filter :skull:
-            // filteredVector = posFilter.update(twist.value(), localizerPose.position);
+            // May not work lmao
+             filteredVector = filter.update(twist.value(), localizerPose.position);
 
             // Just use existing pose (lmao)
             pose = localizerPose;
