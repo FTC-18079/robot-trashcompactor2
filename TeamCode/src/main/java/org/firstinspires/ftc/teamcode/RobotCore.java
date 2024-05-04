@@ -163,8 +163,21 @@ public class RobotCore extends Robot {
      * @return 0 to +/- 100%
      */
     public double responseCurve(double value, double power) {
+//        value = deadzone(value, DEADZONE);
         value *= Math.pow(Math.abs(value), power - 1);
         return value;
+    }
+
+    public double deadzone(double value, double deadZone) {
+        if (Math.abs(value) > deadZone) {
+            if (value > 0.0) {
+                return (value - deadZone) / (1.0 - deadZone);
+            } else {
+                return (value + deadZone) / (1.0 - deadZone);
+            }
+        } else {
+            return 0.0;
+        }
     }
 
     @Override
