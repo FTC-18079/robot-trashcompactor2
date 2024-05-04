@@ -25,6 +25,7 @@ public class KalmanFilter {
     double K = 1; // Initial Kalman gain guess
 
     public final KalmanCoefficients kalman;
+
     /**
      * @param Q model covariance (trust in model), default 0.1
      * @param R sensor covariance (trust in sensor), default 0.4

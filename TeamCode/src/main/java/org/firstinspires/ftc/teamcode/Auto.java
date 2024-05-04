@@ -65,7 +65,7 @@ public class Auto extends LinearOpMode {
 
         TfodPipeline tfod = new TfodPipeline(hardwareMap, asset, labels, liveView);
         while (tfod.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Status", "Initializing Camera");
+            telemetry.addData("Status", "Initializing Object Detection");
             telemetry.update();
         }
 

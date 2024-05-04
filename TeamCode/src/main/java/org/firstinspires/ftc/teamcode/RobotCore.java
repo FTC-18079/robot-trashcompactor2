@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.Field2d;
 import org.firstinspires.ftc.teamcode.util.Global;
+import org.firstinspires.ftc.teamcode.vision.ATVision;
+import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.Math;
 
@@ -25,6 +27,7 @@ public class RobotCore extends Robot {
     GamepadEx manipController;
     Pose2d initialPose;
     SequentialCommandGroup autoSchedule;
+    ATVision atVision;
     // Subsystems
     Chassis chassis;
     // Paths
@@ -40,8 +43,12 @@ public class RobotCore extends Robot {
 
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        this.telemetry.addData("Status", "Initializing Robot");
-        this.telemetry.update();
+
+        atVision = new ATVision(hardwareMap);
+        while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            telemetry.addData("Status", "Initializing AprilTags");
+            telemetry.update();
+        }
 
         this.hardwareMap = hardwareMap;
         this.driveController = new GamepadEx(gamePad1);
@@ -55,11 +62,13 @@ public class RobotCore extends Robot {
 
         // Set up OpMode
         setupOpMode(type);
-        this.telemetry.addData("Status", "Robot Initialized");
+        this.telemetry.addData("Status", "Robot Initialized, ready to enable");
         this.telemetry.update();
     }
 
     public void initSubsystems() {
+        this.telemetry.addData("Status", "Initializing Subsystems");
+        this.telemetry.update();
         chassis = new Chassis(this, initialPose);
     }
 
@@ -120,6 +129,7 @@ public class RobotCore extends Robot {
     @Override
     public void run() {
         CommandScheduler.getInstance().run();
+        this.telemetry.addData("AprilTag FPS", atVision.getFPS());
         this.telemetry.update();
     }
 }
