@@ -7,11 +7,13 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
+import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.Field2d;
 import org.firstinspires.ftc.teamcode.util.Global;
@@ -30,6 +32,8 @@ public class RobotCore extends Robot {
     ATVision atVision;
     // Subsystems
     Chassis chassis;
+    // Commands
+    TeleOpDriveCommand driveCommand;
     // Paths
     Action toStage1;
     Action toStage2;
@@ -70,6 +74,8 @@ public class RobotCore extends Robot {
         this.telemetry.addData("Status", "Initializing Subsystems");
         this.telemetry.update();
         chassis = new Chassis(this, initialPose);
+
+        register(chassis);
     }
 
     private void setupOpMode(OpModeType type) {
@@ -84,7 +90,23 @@ public class RobotCore extends Robot {
     }
 
     private void initTeleOp() {
-        // Add teleop code here
+        // Drive command
+        driveCommand = new TeleOpDriveCommand(
+                chassis,
+                () -> driveController.getLeftX(),
+                () -> driveController.getLeftY(),
+                () -> driveController.getRightX()
+        );
+
+        // Toggle field centric
+        driveController.getGamepadButton(GamepadKeys.Button.X)
+                        .whenPressed(chassis::toggleFieldCentric);
+        // Reset robot heading
+        driveController.getGamepadButton(GamepadKeys.Button.Y)
+                        .whenPressed(chassis::resetHeading);
+
+        // Set default commands
+        chassis.setDefaultCommand(driveCommand);
     }
 
     private void initAuto() {
