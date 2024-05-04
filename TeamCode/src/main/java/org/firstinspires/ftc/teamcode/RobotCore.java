@@ -6,12 +6,15 @@ import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
+import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.Field2d;
 import org.firstinspires.ftc.teamcode.util.Global;
@@ -27,14 +30,21 @@ public class RobotCore extends Robot {
     GamepadEx manipController;
     Pose2d initialPose;
     SequentialCommandGroup autoSchedule;
-    ATVision atVision;
+    public ATVision atVision;
     // Subsystems
     Chassis chassis;
+    // Commands
+    TeleOpDriveCommand driveCommand;
     // Paths
     Action toStage1;
     Action toStage2;
     Action toStage3;
     Action toPark;
+    Action end;
+    // Drive
+    private static final double DRIVE_SENSITIVITY = 1.1;
+    private static final double ROTATIONAL_SENSITIVITY = 2.0;
+    private static final double DEADZONE = 0.09;
 
     // OpMode type enumerator
     public enum OpModeType {
@@ -70,6 +80,8 @@ public class RobotCore extends Robot {
         this.telemetry.addData("Status", "Initializing Subsystems");
         this.telemetry.update();
         chassis = new Chassis(this, initialPose);
+
+        register(chassis);
     }
 
     private void setupOpMode(OpModeType type) {
@@ -84,24 +96,46 @@ public class RobotCore extends Robot {
     }
 
     private void initTeleOp() {
-        // Add teleop code here
+        // Drive command
+        driveCommand = new TeleOpDriveCommand(
+                chassis,
+                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
+                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
+                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
+        );
+
+        // Toggle field centric
+        driveController.getGamepadButton(GamepadKeys.Button.X)
+                        .whenPressed(chassis::toggleFieldCentric);
+        // Reset robot heading
+        driveController.getGamepadButton(GamepadKeys.Button.Y)
+                        .whenPressed(chassis::resetHeading);
+
+        // Set default commands
+        chassis.setDefaultCommand(driveCommand);
     }
 
     private void initAuto() {
         toStage1 = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(36, -12, 0), Math.PI / 2.0)
+                .splineToSplineHeading(new Pose2d(40, -24, 0), Math.PI / 2.0)
                 .build();
 
         toStage2 = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(36, 0, 0), Math.PI / 2.0)
+                .splineToSplineHeading(new Pose2d(40, -12, 0), Math.PI / 2.0)
                 .build();
 
         toStage3 = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(36, 12, 0), Math.PI / 2.0)
+                .splineToSplineHeading(new Pose2d(40, 0, 0), Math.PI / 2.0)
                 .build();
 
         toPark = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(40, 24, Math.toRadians(180)), Math.PI / 2.0)
+                .strafeToSplineHeading(new Vector2d(40, -40), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(60, -58, Math.toRadians(90)), Math.toRadians(0))
+                .build();
+
+        end = chassis.actionBuilder(chassis.getPoseEstimate())
+                .strafeToConstantHeading(new Vector2d(35, -58))
+                .splineToSplineHeading(new Pose2d(12, -12, Math.toRadians(180)), Math.toRadians(90))
                 .build();
     }
 
@@ -113,7 +147,10 @@ public class RobotCore extends Robot {
 
         autoSchedule = new SequentialCommandGroup(
                 new ActionCommand(toStage, chassis),
-                new ActionCommand(toPark, chassis)
+                new WaitCommand(1000),
+                new ActionCommand(toPark, chassis),
+                new WaitCommand(1000),
+                new ActionCommand(end, chassis)
         );
         CommandScheduler.getInstance().schedule(autoSchedule);
     }
@@ -124,6 +161,34 @@ public class RobotCore extends Robot {
 
     public Telemetry getTelemetry() {
         return this.telemetry;
+    }
+
+    // bear metal <3
+    /**
+     * Reduces the sensitivity around the zero point to make the Robot more
+     * controllable.
+     *
+     * @param value raw input
+     * @param power 1.0 indicates linear (full sensitivity) - larger number
+     *              reduces small values
+     * @return 0 to +/- 100%
+     */
+    public double responseCurve(double value, double power) {
+//        value = deadzone(value, DEADZONE);
+        value *= Math.pow(Math.abs(value), power - 1);
+        return value;
+    }
+
+    public double deadzone(double value, double deadZone) {
+        if (Math.abs(value) > deadZone) {
+            if (value > 0.0) {
+                return (value - deadZone) / (1.0 - deadZone);
+            } else {
+                return (value + deadZone) / (1.0 - deadZone);
+            }
+        } else {
+            return 0.0;
+        }
     }
 
     @Override
