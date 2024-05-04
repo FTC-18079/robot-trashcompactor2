@@ -13,7 +13,7 @@ public class VisionConstants {
     public static double R = 0.4;
 
     // AprilTag camera position
-    public static Vector2d arducamPose = new Vector2d(3, 3); // TODO: use not made-up numbers :skull:
+    public static Vector2d arducamPose = new Vector2d(4.4882, 8.0315);
 
     // Arducam lens intrinsics
     public static final double arducam_fx = 547.622;
