@@ -39,6 +39,10 @@ public class RobotCore extends Robot {
     Action toStage2;
     Action toStage3;
     Action toPark;
+    // Drive
+    private static final double DRIVE_SENSITIVITY = 1.1;
+    private static final double ROTATIONAL_SENSITIVITY = 2.0;
+    private static final double DEADZONE = 0.09;
 
     // OpMode type enumerator
     public enum OpModeType {
@@ -93,9 +97,9 @@ public class RobotCore extends Robot {
         // Drive command
         driveCommand = new TeleOpDriveCommand(
                 chassis,
-                () -> driveController.getLeftX(),
-                () -> driveController.getLeftY(),
-                () -> driveController.getRightX()
+                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
+                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
+                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
         );
 
         // Toggle field centric
@@ -146,6 +150,21 @@ public class RobotCore extends Robot {
 
     public Telemetry getTelemetry() {
         return this.telemetry;
+    }
+
+    // bear metal <3
+    /**
+     * Reduces the sensitivity around the zero point to make the Robot more
+     * controllable.
+     *
+     * @param value raw input
+     * @param power 1.0 indicates linear (full sensitivity) - larger number
+     *              reduces small values
+     * @return 0 to +/- 100%
+     */
+    public double responseCurve(double value, double power) {
+        value *= Math.pow(Math.abs(value), power - 1);
+        return value;
     }
 
     @Override
