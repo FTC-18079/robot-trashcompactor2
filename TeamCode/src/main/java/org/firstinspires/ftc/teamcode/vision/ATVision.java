@@ -23,6 +23,7 @@ public class ATVision {
     private AprilTagProcessor tagProcessor;
     private VisionPortal visionPortal;
     public AprilTagDetection lastDetection;
+    public final VisionStream stream = new VisionStream();
 
     public ATVision(HardwareMap hMap) {
         // Create AT Processor
@@ -39,6 +40,7 @@ public class ATVision {
                 .setCameraResolution(new Size(640, 480))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .addProcessor(tagProcessor)
+                .addProcessor(stream)
                 .enableLiveView(false)
                 .build();
     }
