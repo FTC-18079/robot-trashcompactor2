@@ -55,6 +55,7 @@ public class RobotCore extends Robot {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         atVision = new ATVision(hardwareMap);
+        FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
         while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Status", "Initializing AprilTags");
             telemetry.update();
