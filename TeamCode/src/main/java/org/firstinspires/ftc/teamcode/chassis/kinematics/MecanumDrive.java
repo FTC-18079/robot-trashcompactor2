@@ -126,6 +126,8 @@ public class MecanumDrive {
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
+    private final RobotMap hardware = RobotMap.getInstance();
+
     public class DriveLocalizer implements Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
         public final IMU imu;
@@ -218,10 +220,10 @@ public class MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        leftFront = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_FL);
-        leftBack = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_BL);
-        rightBack = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_BR);
-        rightFront = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_FR);
+        leftFront = hardware.driveFL;
+        leftBack = hardware.driveBL;
+        rightBack = hardware.driveBR;
+        rightFront = hardware.driveFR;
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -233,8 +235,7 @@ public class MecanumDrive {
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        lazyImu = new LazyImu(hardwareMap, RobotMap.IMU, new RevHubOrientationOnRobot(
-                PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
+        lazyImu = hardware.imu;
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
