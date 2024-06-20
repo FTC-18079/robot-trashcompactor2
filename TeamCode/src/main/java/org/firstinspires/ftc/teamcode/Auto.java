@@ -20,6 +20,8 @@ import java.lang.Math;
 
 @Autonomous(name = "Test Autonomous", group = "Autos")
 public class Auto extends LinearOpMode {
+    private final RobotMap hardware = RobotMap.getInstance();
+
     @Override
     public void runOpMode() {
         long delayMs = 0;
@@ -53,6 +55,8 @@ public class Auto extends LinearOpMode {
             telemetry.addLine("Press options to finish");
             telemetry.update();
         }
+
+        hardware.init(hardwareMap);
 
         if (Global.alliance == null) Global.alliance = Global.Alliance.RED;
         telemetry.addData("Status", "Creating Vision Processor");

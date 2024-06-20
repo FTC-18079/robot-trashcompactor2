@@ -17,6 +17,8 @@ public class TfodPipeline {
     public TfodProcessor tfodProcessor;
     public VisionPortal visionPortal;
 
+    private final RobotMap hardware = RobotMap.getInstance();
+
     public TfodPipeline(HardwareMap hMap, String asset, String[] labels, boolean liveView) {
         // Create object detection processor
         tfodProcessor = new TfodProcessor.Builder()
@@ -29,7 +31,7 @@ public class TfodPipeline {
 
         // Create vision processor
         visionPortal = new VisionPortal.Builder()
-                .setCamera(hMap.get(WebcamName.class, RobotMap.CAMERA_OBJECT))
+                .setCamera(hardware.objectCamera)
                 .setCameraResolution(new Size(640,480))
                 .addProcessor(tfodProcessor)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)

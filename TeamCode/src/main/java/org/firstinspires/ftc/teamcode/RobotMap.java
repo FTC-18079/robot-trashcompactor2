@@ -8,13 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
 
 public class RobotMap {
     // Sensors
     public LazyImu imu;
-    public static final String CAMERA_AT = "arducam";
-    public static final String CAMERA_OBJECT = "object";
+    public WebcamName tagCamera;
+    public WebcamName objectCamera;
 
     // Drivetrain
     public DcMotorEx driveFL;
@@ -43,6 +44,8 @@ public class RobotMap {
 
     public void init(HardwareMap hardwareMap) {
         this.imu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(MecanumDrive.PARAMS.logoFacingDirection, MecanumDrive.PARAMS.usbFacingDirection));
+        this.tagCamera = hardwareMap.get(WebcamName.class, "arducam");
+        this.objectCamera = hardwareMap.get(WebcamName.class, "object");
 
         this.driveFL = hardwareMap.get(DcMotorEx.class, "driveFL");
         this.driveFR = hardwareMap.get(DcMotorEx.class, "driveFR");

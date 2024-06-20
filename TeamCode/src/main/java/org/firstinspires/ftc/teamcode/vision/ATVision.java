@@ -25,6 +25,8 @@ public class ATVision {
     public AprilTagDetection lastDetection;
     public final VisionStream stream = new VisionStream();
 
+    private final RobotMap hardware = RobotMap.getInstance();
+
     public ATVision(HardwareMap hMap) {
         // Create AT Processor
         tagProcessor = new AprilTagProcessor.Builder()
@@ -36,7 +38,7 @@ public class ATVision {
 
         // Create Vision Portal
         visionPortal = new VisionPortal.Builder()
-                .setCamera(hMap.get(WebcamName.class, RobotMap.CAMERA_AT))
+                .setCamera(hardware.tagCamera)
                 .setCameraResolution(new Size(640, 480))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .addProcessor(tagProcessor)

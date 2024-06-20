@@ -15,6 +15,7 @@ import java.lang.Math;
 
 @TeleOp(name = "TeleOp", group = "OpModes")
 public class TeleOpMode extends LinearOpMode {
+    private final RobotMap hardware = RobotMap.getInstance();
     Canvas c;
     TelemetryPacket packet = new TelemetryPacket();
 
@@ -22,6 +23,8 @@ public class TeleOpMode extends LinearOpMode {
     public void runOpMode() {
         c = packet.fieldOverlay();
         Pose2d initialPose = new Pose2d(60, 12, Math.toRadians(180)); // Global.field.getRobotPose();
+
+        hardware.init(hardwareMap);
 
         // Init robot
         RobotCore robot = new RobotCore(
