@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
@@ -44,7 +45,10 @@ public class RobotCore extends Robot {
     private static final double DRIVE_SENSITIVITY = 1.1;
     private static final double ROTATIONAL_SENSITIVITY = 2.0;
     private static final double DEADZONE = 0.09;
-
+    // Loop times
+    private double loopTime = 0.0;
+    private final ElapsedTime timer = new ElapsedTime();
+    private double endTime = 0;
     // OpMode type enumerator
     public enum OpModeType {
         TELEOP, AUTO
@@ -194,7 +198,13 @@ public class RobotCore extends Robot {
     @Override
     public void run() {
         CommandScheduler.getInstance().run();
+        double loop = System.nanoTime();
+
         this.telemetry.addData("AprilTag FPS", atVision.getFPS());
+        this.telemetry.addData("hz", 1000000000 / (loop - loopTime));
+        this.telemetry.addData("Runtime", endTime == 0 ? timer.seconds() : endTime);
+        loopTime = loop;
+
         this.telemetry.update();
     }
 }
