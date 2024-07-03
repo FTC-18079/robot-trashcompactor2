@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp(name = "Test OpMode", group = "Tests")
 public class TestOpMode extends LinearOpMode {
 
@@ -45,6 +47,11 @@ public class TestOpMode extends LinearOpMode {
             bl.setPower(input);
             fr.setPower(input);
             br.setPower(input);
+
+            telemetry.addData("FL", fl.getVelocity(AngleUnit.DEGREES) / 6);
+            telemetry.addData("BL", bl.getVelocity(AngleUnit.DEGREES) / 6);
+            telemetry.addData("FR", fr.getVelocity(AngleUnit.DEGREES) / 6);
+            telemetry.addData("BR", br.getVelocity(AngleUnit.DEGREES) / 6);
 
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
