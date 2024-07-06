@@ -41,7 +41,7 @@ public class TestOpMode extends LinearOpMode {
         br.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while(opModeIsActive() || !isStopRequested()) {
-            double input = -gamepad1.left_stick_y;
+            double input = responseCurve(-gamepad1.left_stick_y, 1.1);
 
             fl.setPower(input);
             bl.setPower(input);
@@ -60,5 +60,11 @@ public class TestOpMode extends LinearOpMode {
 
             telemetry.update();
         }
+    }
+
+    public double responseCurve(double value, double power) {
+//        value = deadzone(value, DEADZONE);
+        value *= Math.pow(Math.abs(value), power - 1);
+        return value;
     }
 }
