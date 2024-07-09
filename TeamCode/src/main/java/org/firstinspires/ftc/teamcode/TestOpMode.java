@@ -38,7 +38,10 @@ public class TestOpMode extends LinearOpMode {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        bl.setDirection(DcMotorSimple.Direction.FORWARD);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
+        fr.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while(opModeIsActive() || !isStopRequested()) {
             double input = responseCurve(-gamepad1.left_stick_y, 1.1);

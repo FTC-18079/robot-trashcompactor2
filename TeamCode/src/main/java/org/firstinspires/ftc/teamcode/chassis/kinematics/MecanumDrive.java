@@ -73,13 +73,13 @@ public class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 0.000768236002; // (Dist traveled / measured ticks)
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 0.000768073735; // (Dist traveled / measured ticks)
+        public double lateralInPerTick = 0.000600899230693945; // (Dist traveled / measured ticks)
+        public double trackWidthTicks = 16172.352276534692;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.8299614703318023;
-        public double kV = 0.00008930987112546107;
+        public double kS = 1.4245076287152973;
+        public double kV = 0.00011910176555880211;
         public double kA = 0;
 
         // path profile parameters (in inches)
@@ -237,10 +237,10 @@ public class MecanumDrive {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
