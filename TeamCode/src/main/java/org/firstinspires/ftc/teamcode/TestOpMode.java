@@ -48,10 +48,10 @@ public class TestOpMode extends LinearOpMode {
             fr.setPower(input);
             br.setPower(input);
 
-            telemetry.addData("FL", fl.getVelocity(AngleUnit.DEGREES) / 6);
-            telemetry.addData("BL", bl.getVelocity(AngleUnit.DEGREES) / 6);
-            telemetry.addData("FR", fr.getVelocity(AngleUnit.DEGREES) / 6);
-            telemetry.addData("BR", br.getVelocity(AngleUnit.DEGREES) / 6);
+            telemetry.addData("FL", fl.getVelocity(AngleUnit.DEGREES) / 6.0 / 15.0);
+            telemetry.addData("BL", bl.getVelocity(AngleUnit.DEGREES) / 6.0 / 15.0);
+            telemetry.addData("FR", fr.getVelocity(AngleUnit.DEGREES) / 6.0 / 15.0);
+            telemetry.addData("BR", br.getVelocity(AngleUnit.DEGREES) / 6.0 / 15.0);
 
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));

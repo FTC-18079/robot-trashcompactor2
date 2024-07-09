@@ -87,6 +87,7 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updatePoseEstimate();
+        telemetry.addData("Field centric", isFieldCentric);
         telemetry.addData("Pose estimate", drive.pose.toString());
     }
 }

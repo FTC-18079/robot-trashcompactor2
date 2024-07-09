@@ -86,6 +86,7 @@ public class Auto extends LinearOpMode {
         Recognition recognition = null;
         while (opModeInInit()) {
             recognition = tfod.getTfodDetection();
+            telemetry.addData("Randomization", recognition.toString());
         }
         Global.randomization = tfod.getRandomization(recognition);
 
