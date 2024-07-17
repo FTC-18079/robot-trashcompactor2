@@ -27,8 +27,7 @@ public class Chassis extends SubsystemBase {
         this.hMap = robot.getHardwareMap();
         this.telemetry = robot.getTelemetry();
         isFieldCentric = true;
-        // TODO: change to use ATDrive after tuning MecanumDrive
-        drive = new MecanumDrive(hMap, initialPose); // robot.atvision
+        drive = new ATDrive(hMap, initialPose, robot.atVision);
     }
 
     /**
