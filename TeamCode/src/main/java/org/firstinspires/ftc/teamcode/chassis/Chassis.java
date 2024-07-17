@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.chassis;
 
 import static org.firstinspires.ftc.teamcode.util.Global.Alliance.BLUE;
+import static org.firstinspires.ftc.teamcode.util.Global.Alliance.RED;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -37,12 +38,14 @@ public class Chassis extends SubsystemBase {
      * @param turn the rotation movement input
      */
     public void setDrivePowers(double x, double y, double turn) {
-        Vector2d input = new Vector2d(-y, -x);
+        Vector2d input = new Vector2d(-x, -y);
         double rotationAmount = -drive.pose.heading.log();
 
+        // TODO: fix whatever this is :skull:
         if (isFieldCentric) {
           if (Global.alliance == BLUE) rotationAmount = rotationAmount - Math.toRadians(90);
-          else rotationAmount = rotationAmount + Math.toRadians(90);
+          else if (Global.alliance == RED) rotationAmount = rotationAmount + Math.toRadians(90);
+          else rotationAmount = 0;
 
           input = Rotation2d.fromDouble(rotationAmount).times(new Vector2d(input.x, input.y));
         }
