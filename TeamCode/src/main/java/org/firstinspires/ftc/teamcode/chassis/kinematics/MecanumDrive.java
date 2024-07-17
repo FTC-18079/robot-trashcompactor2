@@ -51,6 +51,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.RobotMap;
+import org.firstinspires.ftc.teamcode.chassis.localizers.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.chassis.localizers.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.roadrunner.Localizer;
@@ -248,6 +249,7 @@ public class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+//        localizer = new OTOSLocalizer(hardwareMap);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }

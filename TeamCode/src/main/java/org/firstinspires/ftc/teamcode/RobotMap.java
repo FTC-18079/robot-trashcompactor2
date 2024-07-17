@@ -5,6 +5,7 @@ public class RobotMap {
     public static final String IMU = "imu";
     public static final String CAMERA_AT = "arducam";
     public static final String CAMERA_OBJECT = "object";
+    public static final String OTOS = "otos";
 
     // Drive Motors
     public static final String MOTOR_FL = "frontLeft";
@@ -16,4 +17,5 @@ public class RobotMap {
     public static final String PIVOT = "pivot";
     public static final String SHOOTER = "shooter";
     public static final String INDEXER = "indexer";
+
 }
