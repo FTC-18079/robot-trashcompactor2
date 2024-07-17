@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 
 public class Global {
     public enum Alliance {
-        RED, BLUE
+        RED, BLUE, NONE
     }
     public enum Randomization {
         LEFT, CENTER, RIGHT
