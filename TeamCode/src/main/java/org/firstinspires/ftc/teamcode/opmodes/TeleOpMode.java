@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.*;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.vision.VisionStream;
@@ -39,12 +40,12 @@ public class TeleOpMode extends LinearOpMode {
         c.setStroke("#4CAF50");
         // Run until end or stopped
         while(opModeIsActive() || !isStopRequested()) {
-            Drawing.drawRobot(c, robot.chassis.getPoseEstimate());
+            Drawing.drawRobot(c, robot.getPoseEstimate());
             robot.run();
         }
 
         // Store pose
-        Global.field.setRobotPose(robot.chassis.getPoseEstimate());
+        Global.field.setRobotPose(robot.getPoseEstimate());
         robot.reset();
     }
 }

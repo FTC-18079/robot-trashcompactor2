@@ -207,4 +207,8 @@ public class RobotCore extends Robot {
 
         this.telemetry.update();
     }
+
+    public Pose2d getPoseEstimate() {
+        return chassis.getPoseEstimate();
+    }
 }
