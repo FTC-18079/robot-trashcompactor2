@@ -5,7 +5,9 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.*;
+import com.acmerobotics.roadrunner.AccelConstraint;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Actions;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.HolonomicController;
@@ -14,13 +16,20 @@ import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.MotorFeedforward;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.PoseVelocity2dDual;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
+import com.acmerobotics.roadrunner.ProfileParams;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Twist2dDual;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.Encoder;
@@ -50,13 +59,11 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 
-import java.lang.Math;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 @Config
-// Had to make this not final so ATDrive could extend it
 public class MecanumDrive {
     public static class Params {
         // IMU orientation
@@ -66,14 +73,14 @@ public class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
         // drive model parameters
-        public double inPerTick = 62.0 / 81401.0;
-        public double lateralInPerTick = 0.0005678225386168334;
-        public double trackWidthTicks = 16260.10748271788;
+        public double inPerTick = 0.000768073735; // (Dist traveled / measured ticks)
+        public double lateralInPerTick = 0.000613688240536535; // (Dist traveled / measured ticks)
+        public double trackWidthTicks = 16046.774068007577;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.6271987796207963;
-        public double kV = 0.00012462248029428258;
-        public double kA = 0.00002;
+        public double kS = 1.1704600001656784;
+        public double kV = 0.0001237651356423722;
+        public double kA = 0.000015;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -85,14 +92,13 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        // TODO: retune all these gains, I grabbed them online and they are fairly inaccurate
-        public double axialGain = 2.0; //2.0
-        public double lateralGain = 2.0; // 2.0
-        public double headingGain = 2.0; // shared with turn 2.0
+        public double axialGain = 0.1;
+        public double lateralGain = 0.1;
+        public double headingGain = 0.1; // shared with turn
 
-        public double axialVelGain = 0.5; // 0.5
-        public double lateralVelGain = 1.0; // 1.0
-        public double headingVelGain = 0.5; // shared with turn 0.5
+        public double axialVelGain = 0.001;
+        public double lateralVelGain = 0.001;
+        public double headingVelGain = 0.001; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -119,9 +125,9 @@ public class MecanumDrive {
     public final Localizer localizer;
     public Pose2d pose;
 
-    public final LinkedList<Pose2d> poseHistory = new LinkedList<>(); // Made public for ATDrive
+    public final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
-    public final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000); // Made public for ATDrive
+    public final DownsampledWriter estimatedPoseWriter = new DownsampledWriter("ESTIMATED_POSE", 50_000_000);
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
@@ -142,6 +148,7 @@ public class MecanumDrive {
 
             imu = lazyImu.get();
 
+            // TODO: reverse encoders if needed
             //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
@@ -218,6 +225,8 @@ public class MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
+        // TODO: make sure your config has motors with these names (or change them)
+        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         leftFront = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_FL);
         leftBack = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_BL);
         rightBack = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_BR);
@@ -228,12 +237,12 @@ public class MecanumDrive {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        lazyImu = new LazyImu(hardwareMap, RobotMap.IMU, new RevHubOrientationOnRobot(
+        lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();

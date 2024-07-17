@@ -27,7 +27,7 @@ public class Chassis extends SubsystemBase {
         this.telemetry = robot.getTelemetry();
         isFieldCentric = true;
         // TODO: change to use ATDrive after tuning MecanumDrive
-        drive = new ATDrive(hMap, initialPose, robot.atVision);
+        drive = new MecanumDrive(hMap, initialPose); // robot.atvision
     }
 
     /**
@@ -87,6 +87,7 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updatePoseEstimate();
+        telemetry.addData("Field centric", isFieldCentric);
         telemetry.addData("Pose estimate", drive.pose.toString());
     }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import android.util.Size;
 
@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.vision.TfodPipeline;
 import org.firstinspires.ftc.teamcode.vision.VisionConstants;
@@ -86,6 +87,7 @@ public class Auto extends LinearOpMode {
         Recognition recognition = null;
         while (opModeInInit()) {
             recognition = tfod.getTfodDetection();
+            telemetry.addData("Randomization", recognition.toString());
         }
         Global.randomization = tfod.getRandomization(recognition);
 
@@ -102,7 +104,7 @@ public class Auto extends LinearOpMode {
         }
 
         // Store pose
-        Global.field.setRobotPose(robot.chassis.getPoseEstimate());
+        Global.field.setRobotPose(robot.getPoseEstimate());
         robot.reset();
     }
 }
