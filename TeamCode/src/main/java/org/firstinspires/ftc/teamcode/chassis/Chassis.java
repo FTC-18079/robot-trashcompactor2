@@ -19,15 +19,13 @@ import org.firstinspires.ftc.teamcode.util.Global;
 import java.lang.Math;
 
 public class Chassis extends SubsystemBase {
-    HardwareMap hMap;
     Telemetry telemetry;
     MecanumDrive drive;
     boolean isFieldCentric;
     public Chassis(RobotCore robot, Pose2d initialPose) {
-        this.hMap = robot.getHardwareMap();
         this.telemetry = robot.getTelemetry();
         isFieldCentric = true;
-        drive = new ATDrive(hMap, initialPose, robot.atVision);
+        drive = new ATDrive(initialPose, robot.atVision);
     }
 
     /**

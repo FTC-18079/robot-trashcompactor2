@@ -25,7 +25,6 @@ import java.lang.Math;
 
 public class RobotCore extends Robot {
     RobotMap robotMap;
-    HardwareMap hardwareMap;
     Telemetry telemetry;
     GamepadEx driveController;
     GamepadEx manipController;
@@ -68,7 +67,6 @@ public class RobotCore extends Robot {
             telemetry.update();
         }
 
-        this.hardwareMap = hardwareMap;
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
@@ -161,10 +159,6 @@ public class RobotCore extends Robot {
                 new ActionCommand(end, chassis)
         );
         CommandScheduler.getInstance().schedule(autoSchedule);
-    }
-
-    public HardwareMap getHardwareMap() {
-        return this.hardwareMap;
     }
 
     public Telemetry getTelemetry() {
