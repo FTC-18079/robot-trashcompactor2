@@ -25,7 +25,7 @@ public class ATVision {
     public AprilTagDetection lastDetection;
     public final VisionStream stream = new VisionStream();
 
-    public ATVision(HardwareMap hMap) {
+    public ATVision() {
         // Create AT Processor
         tagProcessor = new AprilTagProcessor.Builder()
                 .setLensIntrinsics(VisionConstants.arducam_fx, VisionConstants.arducam_fy, VisionConstants.arducam_cx, VisionConstants.arducam_cy)
@@ -36,7 +36,7 @@ public class ATVision {
 
         // Create Vision Portal
         visionPortal = new VisionPortal.Builder()
-                .setCamera(hMap.get(WebcamName.class, RobotMap.CAMERA_AT))
+                .setCamera(RobotMap.getInstance().CAMERA_AT)
                 .setCameraResolution(new Size(640, 480))
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .addProcessor(tagProcessor)

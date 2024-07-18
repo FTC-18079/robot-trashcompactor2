@@ -65,6 +65,7 @@ import java.util.List;
 
 @Config
 public class MecanumDrive {
+    RobotMap robotMap = RobotMap.getInstance();
     public static class Params {
         // IMU orientation
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
@@ -147,9 +148,6 @@ public class MecanumDrive {
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
             imu = lazyImu.get();
-
-            // TODO: reverse encoders if needed
-            //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         @Override
@@ -219,18 +217,16 @@ public class MecanumDrive {
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
         this.pose = pose;
 
-        LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
+        LynxFirmware.throwIfModulesAreOutdated(robotMap.getHardwareMap());
 
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+        for (LynxModule module : robotMap.getHardwareMap().getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: make sure your config has motors with these names (or change them)
-        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_FL);
-        leftBack = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_BL);
-        rightBack = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_BR);
-        rightFront = hardwareMap.get(DcMotorEx.class, RobotMap.MOTOR_FR);
+        leftFront = robotMap.MOTOR_FL;
+        leftBack = robotMap.MOTOR_BL;
+        rightBack = robotMap.MOTOR_BR;
+        rightFront = robotMap.MOTOR_FR;
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -242,12 +238,12 @@ public class MecanumDrive {
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
+        lazyImu = new LazyImu(robotMap.getHardwareMap(), "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
+        voltageSensor = robotMap.VOLTAGE;
 
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+        localizer = new ThreeDeadWheelLocalizer(PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }

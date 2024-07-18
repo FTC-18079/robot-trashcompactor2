@@ -64,7 +64,7 @@ public class Auto extends LinearOpMode {
         String[] labels = Global.alliance == Global.Alliance.RED ?
                 VisionConstants.RED_LABELS : VisionConstants.BLUE_LABELS;
 
-        TfodPipeline tfod = new TfodPipeline(hardwareMap, asset, labels, liveView);
+        TfodPipeline tfod = new TfodPipeline(asset, labels, liveView);
         while (tfod.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Status", "Initializing Object Detection");
             telemetry.update();
