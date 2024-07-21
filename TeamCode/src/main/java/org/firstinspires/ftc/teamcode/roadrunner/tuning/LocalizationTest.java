@@ -8,17 +8,20 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.TankDrive;
 
 public class LocalizationTest extends LinearOpMode {
+    RobotMap robotMap = RobotMap.getInstance();
     @Override
     public void runOpMode() throws InterruptedException {
+        robotMap.init(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
-            MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+            MecanumDrive drive = new MecanumDrive(new Pose2d(0, 0, 0));
 
             waitForStart();
 

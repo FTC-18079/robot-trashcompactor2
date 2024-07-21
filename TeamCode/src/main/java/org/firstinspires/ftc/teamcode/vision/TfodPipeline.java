@@ -4,7 +4,6 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.util.Global;
@@ -17,7 +16,7 @@ public class TfodPipeline {
     public TfodProcessor tfodProcessor;
     public VisionPortal visionPortal;
 
-    public TfodPipeline(HardwareMap hMap, String asset, String[] labels, boolean liveView) {
+    public TfodPipeline(String asset, String[] labels, boolean liveView) {
         // Create object detection processor
         tfodProcessor = new TfodProcessor.Builder()
                 .setModelAssetName(asset)
@@ -29,7 +28,7 @@ public class TfodPipeline {
 
         // Create vision processor
         visionPortal = new VisionPortal.Builder()
-                .setCamera(hMap.get(WebcamName.class, RobotMap.CAMERA_OBJECT))
+                .setCamera(RobotMap.getInstance().CAMERA_OBJECT)
                 .setCameraResolution(new Size(640,480))
                 .addProcessor(tfodProcessor)
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG)

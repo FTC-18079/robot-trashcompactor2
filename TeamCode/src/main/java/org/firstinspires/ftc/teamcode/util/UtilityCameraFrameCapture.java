@@ -79,15 +79,18 @@ public class UtilityCameraFrameCapture extends LinearOpMode
     int frameCount;
     long capReqTime;
 
+    private final RobotMap robotMap = RobotMap.getInstance();
+
     @Override
     public void runOpMode()
     {
+        robotMap.init(hardwareMap);
         VisionPortal portal;
 
         if (USING_WEBCAM)
         {
             portal = new VisionPortal.Builder()
-                    .setCamera(hardwareMap.get(WebcamName.class, RobotMap.CAMERA_AT))
+                    .setCamera(RobotMap.getInstance().CAMERA_AT)
                     .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                     .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                     .build();

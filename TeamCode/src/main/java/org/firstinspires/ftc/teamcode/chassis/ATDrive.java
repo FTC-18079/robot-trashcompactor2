@@ -26,12 +26,11 @@ public class ATDrive extends MecanumDrive {
 
     /**
      *
-     * @param hMap the hardwareMap instance needed to set up hardware
      * @param initialPose the starting position of the robot on the field
      * @param aprilTag the {@link ATVision} instance to get tags from
      */
-    public ATDrive(HardwareMap hMap, Pose2d initialPose, ATVision aprilTag) {
-        super(hMap, initialPose);
+    public ATDrive(Pose2d initialPose, ATVision aprilTag) {
+        super(initialPose);
         this.aprilTag = aprilTag;
 
         // Position filter

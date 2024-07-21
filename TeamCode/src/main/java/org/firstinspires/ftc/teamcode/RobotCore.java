@@ -24,7 +24,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import java.lang.Math;
 
 public class RobotCore extends Robot {
-    HardwareMap hardwareMap;
+    RobotMap robotMap;
     Telemetry telemetry;
     GamepadEx driveController;
     GamepadEx manipController;
@@ -57,14 +57,16 @@ public class RobotCore extends Robot {
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        atVision = new ATVision(hardwareMap);
+        robotMap = RobotMap.getInstance();
+        robotMap.init(hardwareMap);
+
+        atVision = new ATVision();
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
         while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Status", "Initializing AprilTags");
             telemetry.update();
         }
 
-        this.hardwareMap = hardwareMap;
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
@@ -157,10 +159,6 @@ public class RobotCore extends Robot {
                 new ActionCommand(end, chassis)
         );
         CommandScheduler.getInstance().schedule(autoSchedule);
-    }
-
-    public HardwareMap getHardwareMap() {
-        return this.hardwareMap;
     }
 
     public Telemetry getTelemetry() {
