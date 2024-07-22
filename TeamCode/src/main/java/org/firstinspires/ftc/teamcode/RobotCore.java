@@ -63,8 +63,8 @@ public class RobotCore extends Robot {
         atVision = new ATVision();
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
         while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            this.telemetry.addData("Status", "Initializing AprilTags");
-            this.telemetry.update();
+            telemetry.addData("Status", "Initializing AprilTags");
+            telemetry.update();
         }
 
         this.driveController = new GamepadEx(gamePad1);
@@ -204,7 +204,7 @@ public class RobotCore extends Robot {
         this.telemetry.addData("Runtime", endTime == 0 ? timer.seconds() : endTime);
         loopTime = loop;
 
-//        this.telemetry.update();
+        this.telemetry.update();
     }
 
     public Pose2d getPoseEstimate() {

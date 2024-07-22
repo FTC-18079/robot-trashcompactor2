@@ -63,7 +63,9 @@ public class ATVision {
      * @return a {@link Vector2d} representing the average of all AprilTag positions
      */
     public Vector2d getVectorBasedOnTags(double robotHeading) {
-        return getDetections().stream()
+        List<AprilTagDetection> currentDetections = getDetections();
+        if (currentDetections.isEmpty()) return null;
+        return currentDetections.stream()
                 .map(detection -> getFCPosition(detection, robotHeading, VisionConstants.arducamPose))
                 .reduce(new Vector2d(0, 0), Vector2d::plus)
                 .div(getDetections().size());
