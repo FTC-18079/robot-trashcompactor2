@@ -6,8 +6,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RobotMap;
-import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
-import org.firstinspires.ftc.teamcode.chassis.kinematics.TankDrive;
+import org.firstinspires.ftc.teamcode.chassis.drivetrains.MecanumDrive;
+import org.firstinspires.ftc.teamcode.chassis.drivetrains.TankDrive;
 
 public final class SplineTest extends LinearOpMode {
     RobotMap robotMap = RobotMap.getInstance();

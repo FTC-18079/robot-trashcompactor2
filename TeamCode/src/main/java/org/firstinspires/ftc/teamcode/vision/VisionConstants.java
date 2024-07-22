@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -7,13 +8,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 
+@Config
 public class VisionConstants {
     // Kalman coefficients
     public static double Q = 0.1;
     public static double R = 0.4;
 
     // AprilTag camera position
-    public static Vector2d arducamPose = new Vector2d(4.4882, 8.0315);
+    public static double camX = 4.46182610976378;
+    public static double camY = 8.0315;
+    public static final Vector2d arducamPose = new Vector2d(camX, camY);
 
     // Arducam lens intrinsics
     public static final double arducam_fx = 547.622;

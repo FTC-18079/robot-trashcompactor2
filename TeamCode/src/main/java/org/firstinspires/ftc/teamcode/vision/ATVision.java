@@ -5,9 +5,7 @@ import static org.firstinspires.ftc.teamcode.vision.VisionConstants.getCenterSta
 import android.util.Size;
 
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -57,7 +55,7 @@ public class ATVision {
         return tagProcessor.getDetections();
     }
 
-    // Taken from https://github.com/jdhs-ftc/2023
+    // Taken from https://github.com/jdhs-ftc/apriltag-quickstart
 
     /**
      * Gets AprilTag detections calculates positions based on them
@@ -65,31 +63,39 @@ public class ATVision {
      * @return a {@link Vector2d} representing the average of all AprilTag positions
      */
     public Vector2d getVectorBasedOnTags(double robotHeading) {
-        List<AprilTagDetection> currentDetections = getDetections();
-        int realDetections = 0;
-        Vector2d averagePose = new Vector2d(0, 0); // Starting point
-        if (currentDetections.isEmpty()) return null;
-        Vector2d robotPos;
+        return getDetections().stream()
+                .map(detection -> getFCPosition(detection, robotHeading, VisionConstants.arducamPose))
+                .reduce(new Vector2d(0, 0), Vector2d::plus)
+                .div(getDetections().size());
+    }
 
-        // Loop through detection list and calculate robot pose from each tag
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                Vector2d tagPos = toVector2d(detection.metadata.fieldPosition); // SDK builtin tag position
-                double tagHeading = quarternionToHeading(detection.metadata.fieldOrientation); // SDK builtin tag heading
+    public Vector2d getFCPosition(AprilTagDetection detection, double robotHeading, Vector2d cameraOffset) {
+        // get coordinates of the robot in RC coordinates
+        // ensure offsets are RC
+        double x = detection.ftcPose.x-cameraOffset.x;
+        double y = detection.ftcPose.y-cameraOffset.y;
 
-                //RobotPos = calculateRobotPosFromTag(tagPos, tagHeading,localizerPose.heading.log(), detection); // calculate the robot position from the tag position
-                robotPos = calculateRobotPosition(detection, robotHeading, VisionConstants.arducamPose);
+        // invert heading to correct properly
+        robotHeading = -robotHeading;
 
-                // we're going to get the average here by adding them all up and dividingA the number of detections
-                // we do this because the backdrop has 3 tags, so we get 3 positions
-                // hopefully by averaging them we can get a more accurate position
-                lastDetection = detection;
-                averagePose = averagePose.plus(robotPos);
-                realDetections++;
-            }
+        // rotate RC coordinates to be field-centric
+        double x2 = x*Math.cos(robotHeading)+y*Math.sin(robotHeading);
+        double y2 = x*-Math.sin(robotHeading)+y*Math.cos(robotHeading);
+        // add FC coordinates to apriltag position
+        // tags is just the CS apriltag library
+        VectorF tagPose = getCenterStageTagLibrary().lookupTag(detection.id).fieldPosition;
+
+        if (!detection.metadata.name.contains("Audience")) { // is it a backdrop tag?
+            return new Vector2d(
+                    tagPose.get(0) + y2,
+                    tagPose.get(1) - x2);
+
+        } else {
+            return new Vector2d(
+                    tagPose.get(0) - y2,
+                    tagPose.get(1) + x2);
+
         }
-
-        return averagePose.div(realDetections);
     }
 
     /**
@@ -103,37 +109,5 @@ public class ATVision {
 
     public double quarternionToHeading(Quaternion q) {
         return Math.atan2(2.0 * (q.z * q.w + q.x * q.y) , - 1.0 + 2.0 * (q.w * q.w + q.x * q.x)) - Math.toRadians(270);
-    }
-
-    /**
-     * Calculates a robot position based off an AprilTag detection
-     * @param detection the AprilTag detection to estimate position off of
-     * @param robotHeading the robot's current heading to use for the new position
-     * @param cameraOffset the camera's offset from the robot's center
-     * @return a {@link Vector2d} representing the robot's field position
-     */
-    public Vector2d calculateRobotPosition(AprilTagDetection detection, double robotHeading, Vector2d cameraOffset) {
-        // Calculate robot's coordinates
-        double x = detection.ftcPose.x - cameraOffset.x;
-        double y = detection.ftcPose.y - cameraOffset.y;
-        robotHeading = - robotHeading;
-
-        // Rotate coordinates to be field-centric
-        double x2 = x * Math.cos(robotHeading) + y * Math.sin(robotHeading);
-        double y2 = x * -Math.sin(robotHeading) + y * Math.cos(robotHeading);
-
-        // Get tag pose from library
-        VectorF tagPose = getCenterStageTagLibrary().lookupTag(detection.id).fieldPosition;
-
-        // Invert tag if on audience side
-        if (detection.metadata.id <= 6) { // Backdrop side
-            return new Vector2d(
-                    tagPose.get(0) + y2,
-                    tagPose.get(1) - x2
-            );
-        } else return new Vector2d( // Audience side
-                tagPose.get(0) - y2,
-                tagPose.get(1) + x2
-        );
     }
 }

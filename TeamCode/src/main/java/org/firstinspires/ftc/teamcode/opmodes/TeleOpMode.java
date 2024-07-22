@@ -16,7 +16,7 @@ import java.lang.Math;
 public class TeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(12, -61.34, Math.toRadians(90)); // Global.field.getRobotPose();
+        Pose2d initialPose = new Pose2d(12, -36, Math.toRadians(90)); // Global.field.getRobotPose();
 
         // Init robot
         RobotCore robot = new RobotCore(
@@ -27,11 +27,6 @@ public class TeleOpMode extends LinearOpMode {
                 gamepad2,
                 initialPose
         );
-
-        while (opModeInInit()) {
-            telemetry.addData("Alliance", Global.alliance);
-            telemetry.update();
-        }
 
         waitForStart();
 

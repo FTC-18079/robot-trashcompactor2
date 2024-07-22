@@ -1,13 +1,11 @@
-package org.firstinspires.ftc.teamcode.chassis;
+package org.firstinspires.ftc.teamcode.chassis.drivetrains;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 
-import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
+import org.firstinspires.ftc.teamcode.chassis.drivetrains.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.util.KalmanFilter;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
@@ -16,7 +14,7 @@ import org.firstinspires.ftc.teamcode.vision.VisionConstants;
 /**
  * This class serves as an extension of Roadrunner's {@link MecanumDrive} class with {@link ATVision} localization.
  * <p>
- * Taken from https://github.com/jdhs-ftc/2023, modified to our use
+ * Taken from https://github.com/jdhs-ftc/apriltag-quickstart, modified to our use
  */
 public class ATDrive extends MecanumDrive {
     public ATVision aprilTag;
@@ -55,40 +53,32 @@ public class ATDrive extends MecanumDrive {
     }
 
     /**
-     * Updates position estimate with the visible tags by passing through a Kalman filter
+     * Updates position estimate with the visible tags by (not) passing through a Kalman filter
      * @return the robot's velocity
      */
     @Override
     // Method for updating pose estimate with AprilTags
     public PoseVelocity2d updatePoseEstimate() {
-        Twist2dDual<Time> twist = localizer.update();
-        localizerPose = pose.plus(twist.value());
-
+        // RR standard: get the latest pose from the upstream updatePoseEstimate
+        // that will change the pose variable to the pose based on odo or drive encoders (or OTOS)
+        PoseVelocity2d posVel = super.updatePoseEstimate();
+        localizerPose = pose;
+        // Get the absolute position from the camera
         Vector2d aprilVector = aprilTag.getVectorBasedOnTags(localizerPose.heading.log());
 
         if (aprilVector != null) {
-            // If tags are visible, use the apriltag position with localizer heading
-            // Input the change from odometry with the april absolute pose into the kalman filter
-            filteredVector = filter.update(twist.value(), aprilVector);
-            // Then we add the filtered position to the localizer heading as a pose
-            pose = new Pose2d(filteredVector, localizerPose.heading);
-        } else {
-            // If no tags are visible, use the localizer position to update the kalman filter
-            // May not work lmao
-             filteredVector = filter.update(twist.value(), localizerPose.position);
+            // Don't use Kalman filter for now
+            // filteredVector = filter.update(twist.value(), aprilVector);
 
-            // Just use existing pose (lmao)
+            // Use tag pose with odometry heading since AT headings are inaccurate
+            pose = new Pose2d(aprilVector, localizerPose.heading);
+        } else {
+            // Accept current pose if no tags are in sight
             pose = localizerPose;
         }
 
-        // Roadrunner stuff, directly from the overriden method (overrode according to merriam-webster)
-        poseHistory.add(pose);
-        while (poseHistory.size() > 100) {
-            poseHistory.removeFirst();
-        }
-
-        estimatedPoseWriter.write(new PoseMessage(pose));
-
-        return twist.velocity().value();
+        FlightRecorder.write("APRILTAG_POSE", new PoseMessage(pose));
+        // Use localizer speeds
+        return posVel;
     }
 }

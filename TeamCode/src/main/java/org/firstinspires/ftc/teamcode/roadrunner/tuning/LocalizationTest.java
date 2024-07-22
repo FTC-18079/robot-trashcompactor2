@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
-import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
-import org.firstinspires.ftc.teamcode.chassis.kinematics.TankDrive;
+import org.firstinspires.ftc.teamcode.chassis.drivetrains.MecanumDrive;
+import org.firstinspires.ftc.teamcode.chassis.drivetrains.TankDrive;
 
 public class LocalizationTest extends LinearOpMode {
     RobotMap robotMap = RobotMap.getInstance();
