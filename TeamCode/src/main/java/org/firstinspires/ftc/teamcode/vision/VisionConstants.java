@@ -15,8 +15,8 @@ public class VisionConstants {
     public static double R = 0.4;
 
     // AprilTag camera position
-    public static double camX = 4.46182610976378;
-    public static double camY = 8.0315;
+    public static double camX = 0;//8.0315;
+    public static double camY = 0;//4.46182610976378;
     public static final Vector2d arducamPose = new Vector2d(camX, camY);
 
     // Arducam lens intrinsics

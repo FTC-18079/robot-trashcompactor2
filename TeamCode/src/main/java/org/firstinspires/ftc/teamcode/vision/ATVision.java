@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.vision.VisionConstants.getCenterSta
 
 import android.util.Size;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -65,27 +67,47 @@ public class ATVision {
     public Vector2d getVectorBasedOnTags(double robotHeading) {
         List<AprilTagDetection> currentDetections = getDetections();
         if (currentDetections.isEmpty()) return null;
-        return currentDetections.stream()
-                .map(detection -> getFCPosition(detection, robotHeading, VisionConstants.arducamPose))
-                .reduce(new Vector2d(0, 0), Vector2d::plus)
-                .div(getDetections().size());
+        try {
+            return currentDetections.stream()
+                    .map(detection -> getFCPosition(detection, robotHeading, VisionConstants.arducamPose))
+                    .reduce(new Vector2d(0, 0), Vector2d::plus)
+                    .div(getDetections().size());
+        } catch(Exception e) {
+            return null;
+        }
     }
 
+    // TODO: fix backboard side math and remove telemetry when finished
     public Vector2d getFCPosition(AprilTagDetection detection, double robotHeading, Vector2d cameraOffset) {
+        if (detection.ftcPose.range > 50) return null;
+        TelemetryPacket packet = new TelemetryPacket();
+
         // get coordinates of the robot in RC coordinates
         // ensure offsets are RC
-        double x = detection.ftcPose.x-cameraOffset.x;
-        double y = detection.ftcPose.y-cameraOffset.y;
+        double x = detection.ftcPose.x - cameraOffset.x;
+        double y = detection.ftcPose.y - cameraOffset.y;
+
+        packet.addLine("RC X: " + x);
+        packet.addLine("RC Y: " + y);
 
         // invert heading to correct properly
         robotHeading = -robotHeading;
 
         // rotate RC coordinates to be field-centric
-        double x2 = x*Math.cos(robotHeading)+y*Math.sin(robotHeading);
-        double y2 = x*-Math.sin(robotHeading)+y*Math.cos(robotHeading);
+        double x2 = x * Math.cos(robotHeading) + y * Math.sin(robotHeading);
+        double y2 = x * -Math.sin(robotHeading) + y * Math.cos(robotHeading);
+
+        packet.addLine("FC X: " + x2);
+        packet.addLine("FC Y: " + y2);
+
         // add FC coordinates to apriltag position
         // tags is just the CS apriltag library
         VectorF tagPose = getCenterStageTagLibrary().lookupTag(detection.id).fieldPosition;
+
+        packet.addLine("TagPose X: " + tagPose.get(0));
+        packet.addLine("TagPose Y: " + tagPose.get(1));
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         if (!detection.metadata.name.contains("Audience")) { // is it a backdrop tag?
             return new Vector2d(

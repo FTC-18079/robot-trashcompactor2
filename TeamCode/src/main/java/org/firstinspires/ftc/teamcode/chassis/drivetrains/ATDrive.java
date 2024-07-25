@@ -66,7 +66,7 @@ public class ATDrive extends MecanumDrive {
         // Get the absolute position from the camera
         Vector2d aprilVector = aprilTag.getVectorBasedOnTags(localizerPose.heading.log());
 
-        if (aprilVector != null) {
+        if (aprilVector != null && !Double.isNaN(aprilVector.x) && !Double.isNaN(aprilVector.y)) {
             // Don't use Kalman filter for now
             // filteredVector = filter.update(twist.value(), aprilVector);
 
