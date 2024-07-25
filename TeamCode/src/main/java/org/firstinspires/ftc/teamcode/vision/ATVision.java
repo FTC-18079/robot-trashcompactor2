@@ -80,15 +80,11 @@ public class ATVision {
     // TODO: fix backboard side math and remove telemetry when finished
     public Vector2d getFCPosition(AprilTagDetection detection, double robotHeading, Vector2d cameraOffset) {
         if (detection.ftcPose.range > 50) return null;
-        TelemetryPacket packet = new TelemetryPacket();
 
         // get coordinates of the robot in RC coordinates
         // ensure offsets are RC
         double x = detection.ftcPose.x - cameraOffset.x;
         double y = detection.ftcPose.y - cameraOffset.y;
-
-        packet.addLine("RC X: " + x);
-        packet.addLine("RC Y: " + y);
 
         // invert heading to correct properly
         robotHeading = -robotHeading;
@@ -97,22 +93,14 @@ public class ATVision {
         double x2 = x * Math.cos(robotHeading) + y * Math.sin(robotHeading);
         double y2 = x * -Math.sin(robotHeading) + y * Math.cos(robotHeading);
 
-        packet.addLine("FC X: " + x2);
-        packet.addLine("FC Y: " + y2);
-
         // add FC coordinates to apriltag position
         // tags is just the CS apriltag library
         VectorF tagPose = getCenterStageTagLibrary().lookupTag(detection.id).fieldPosition;
 
-        packet.addLine("TagPose X: " + tagPose.get(0));
-        packet.addLine("TagPose Y: " + tagPose.get(1));
-
-        FtcDashboard.getInstance().sendTelemetryPacket(packet);
-
         if (!detection.metadata.name.contains("Audience")) { // is it a backdrop tag?
             return new Vector2d(
-                    tagPose.get(0) + y2,
-                    tagPose.get(1) - x2);
+                    tagPose.get(0) - y2,
+                    tagPose.get(1) + x2);
 
         } else {
             return new Vector2d(
