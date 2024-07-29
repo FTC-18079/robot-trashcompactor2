@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.util.ftclib.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
+import org.firstinspires.ftc.teamcode.vision.DetectionPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.Math;
@@ -147,8 +148,8 @@ public class RobotCore extends Robot {
 
     public void scheduleAuto() {
         Action toStage;
-        if (Global.randomization == Global.Randomization.LEFT) toStage = toStage1;
-        else if (Global.randomization == Global.Randomization.CENTER) toStage = toStage2;
+        if (Global.randomization == DetectionPipeline.Position.LEFT) toStage = toStage1;
+        else if (Global.randomization == DetectionPipeline.Position.CENTER) toStage = toStage2;
         else toStage = toStage3;
 
         autoSchedule = new SequentialCommandGroup(

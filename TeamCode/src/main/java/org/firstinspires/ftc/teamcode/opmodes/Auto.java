@@ -1,26 +1,26 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import android.util.Size;
-
 import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.RobotCore;
+import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.util.Global;
-import org.firstinspires.ftc.teamcode.vision.TfodPipeline;
-import org.firstinspires.ftc.teamcode.vision.VisionConstants;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.firstinspires.ftc.teamcode.vision.DetectionPipeline;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import java.lang.Math;
 
 @Autonomous(name = "Test Autonomous", group = "Autos")
 public class Auto extends LinearOpMode {
+    OpenCvCamera objCamera;
+    DetectionPipeline pipeline;
+    DetectionPipeline.Position randomization;
+
     @Override
     public void runOpMode() {
         long delayMs = 0;
@@ -59,16 +59,22 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Status", "Creating Vision Processor");
         telemetry.update();
 
-        String asset = Global.alliance == Global.Alliance.RED ?
-                VisionConstants.RED_MODEL_ASSET : VisionConstants.BLUE_MODEL_ASSET;
-        String[] labels = Global.alliance == Global.Alliance.RED ?
-                VisionConstants.RED_LABELS : VisionConstants.BLUE_LABELS;
+        // Init vision
+        objCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotMap.getInstance().CAMERA_OBJECT);
+        pipeline = new DetectionPipeline();
+        objCamera.setPipeline(pipeline);
 
-        TfodPipeline tfod = new TfodPipeline(asset, labels, liveView);
-        while (tfod.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Status", "Initializing Object Detection");
-            telemetry.update();
-        }
+        objCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                objCamera.startStreaming(1280, 720);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
 
         CommandScheduler.getInstance().schedule(new WaitCommand(delayMs));
 
@@ -84,15 +90,21 @@ public class Auto extends LinearOpMode {
         );
 
         // Get object detection and randomization
-        Recognition recognition = null;
         while (opModeInInit()) {
-            recognition = tfod.getTfodDetection();
-            telemetry.addData("Randomization", recognition.toString());
-        }
-        Global.randomization = tfod.getRandomization(recognition);
+            telemetry.addData("Randomization", pipeline.getPosition());
+            telemetry.update();
 
-        // Close vision portal
-        tfod.visionPortal.close();
+            // Don't kill CPU lol
+            sleep(50);
+        }
+        randomization = pipeline.getPosition();
+        Global.randomization = randomization;
+
+        // Close camera to save our CPU
+        objCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
+            @Override
+            public void onClose() {}
+        });
 
         // Schedule auto
         robot.scheduleAuto();

@@ -13,6 +13,7 @@ import org.opencv.core.Mat;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+// Dashboard vision livestream
 public class VisionStream implements VisionProcessor, CameraStreamSource {
     private final AtomicReference<Bitmap> lastFrame =
             new AtomicReference<>(Bitmap.createBitmap(1,1,Bitmap.Config.RGB_565));
