@@ -20,6 +20,8 @@ public class Auto extends LinearOpMode {
     OpenCvCamera objCamera;
     DetectionPipeline pipeline;
     DetectionPipeline.Position randomization;
+    boolean cameraFailed = false;
+    int errorValue = 0;
 
     @Override
     public void runOpMode() {
@@ -72,7 +74,8 @@ public class Auto extends LinearOpMode {
 
             @Override
             public void onError(int errorCode) {
-
+                cameraFailed = true;
+                errorValue = errorCode;
             }
         });
 
@@ -92,6 +95,10 @@ public class Auto extends LinearOpMode {
         // Get object detection and randomization
         while (opModeInInit()) {
             telemetry.addData("Randomization", pipeline.getPosition());
+            if (cameraFailed) {
+                telemetry.addData("WARNING", "Camera did not initialize");
+                telemetry.addData("Error code", errorValue);
+            }
             telemetry.update();
 
             // Don't kill CPU lol
@@ -101,6 +108,7 @@ public class Auto extends LinearOpMode {
         Global.randomization = randomization;
 
         // Close camera to save our CPU
+        objCamera.stopStreaming();
         objCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
             @Override
             public void onClose() {}
@@ -111,7 +119,6 @@ public class Auto extends LinearOpMode {
 
         // Run until end or stopped
         while(opModeIsActive() && !isStopRequested()) {
-            telemetry.addData("Funsies", "cool");
             robot.run();
         }
 
