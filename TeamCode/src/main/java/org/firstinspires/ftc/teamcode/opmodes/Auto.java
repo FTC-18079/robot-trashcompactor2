@@ -95,7 +95,7 @@ public class Auto extends LinearOpMode {
         tfod.visionPortal.close();
 
         // Schedule auto
-        robot.scheduleAuto();
+        robot.oldAuto();
 
         // Run until end or stopped
         while(opModeIsActive() && !isStopRequested()) {

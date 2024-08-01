@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.*;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -145,7 +146,11 @@ public class RobotCore extends Robot {
                 .build();
     }
 
-    public void scheduleAuto() {
+    public void scheduleAuto(Command sequence) {
+        CommandScheduler.getInstance().schedule(sequence);
+    }
+
+    public void oldAuto() {
         Action toStage;
         if (Global.randomization == Global.Randomization.LEFT) toStage = toStage1;
         else if (Global.randomization == Global.Randomization.CENTER) toStage = toStage2;
