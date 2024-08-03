@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -14,10 +13,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.auto.BlueForwardSequence;
+import org.firstinspires.ftc.teamcode.auto.RedForwardSequence;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
-import org.firstinspires.ftc.teamcode.util.ftclib.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.Global;
+import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -35,12 +36,6 @@ public class RobotCore extends Robot {
     Chassis chassis;
     // Commands
     TeleOpDriveCommand driveCommand;
-    // Paths
-    Action toStage1;
-    Action toStage2;
-    Action toStage3;
-    Action toPark;
-    Action end;
     // Drive
     private static final double DRIVE_SENSITIVITY = 1.1;
     private static final double ROTATIONAL_SENSITIVITY = 2.0;
@@ -50,8 +45,9 @@ public class RobotCore extends Robot {
     private final ElapsedTime timer = new ElapsedTime();
     private double endTime = 0;
     // OpMode type enumerator
+    AutoPath autoPath;
     public enum OpModeType {
-        TELEOP, AUTO
+        TELEOP, RED_FORWARD, BLUE_FORWARD
     }
 
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
@@ -93,15 +89,20 @@ public class RobotCore extends Robot {
     private void setupOpMode(OpModeType type) {
         switch (type) {
             case TELEOP:
-                initTeleOp();
+                setDriveControls();
                 break;
-            case AUTO:
-                initAuto();
+            case RED_FORWARD:
+                autoPath = new RedForwardSequence(chassis);
                 break;
+            case BLUE_FORWARD:
+                autoPath = new BlueForwardSequence(chassis);
+                break;
+
         }
+        if (type != OpModeType.TELEOP) schedule(autoPath.generate());
     }
 
-    private void initTeleOp() {
+    private void setDriveControls() {
         // Drive command
         driveCommand = new TeleOpDriveCommand(
                 chassis,
@@ -119,46 +120,6 @@ public class RobotCore extends Robot {
 
         // Set default commands
         chassis.setDefaultCommand(driveCommand);
-    }
-
-    private void initAuto() {
-        toStage1 = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(40, -24, 0), Math.PI / 2.0)
-                .build();
-
-        toStage2 = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(40, -12, 0), Math.PI / 2.0)
-                .build();
-
-        toStage3 = chassis.actionBuilder(chassis.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(40, 0, 0), Math.PI / 2.0)
-                .build();
-
-        toPark = chassis.actionBuilder(chassis.getPoseEstimate())
-                .strafeToSplineHeading(new Vector2d(40, -40), Math.toRadians(0))
-                .splineToSplineHeading(new Pose2d(60, -58, Math.toRadians(90)), Math.toRadians(0))
-                .build();
-
-        end = chassis.actionBuilder(chassis.getPoseEstimate())
-                .strafeToConstantHeading(new Vector2d(35, -58))
-                .splineToSplineHeading(new Pose2d(12, -12, Math.toRadians(180)), Math.toRadians(90))
-                .build();
-    }
-
-    public void scheduleAuto() {
-        Action toStage;
-        if (Global.randomization == Global.Randomization.LEFT) toStage = toStage1;
-        else if (Global.randomization == Global.Randomization.CENTER) toStage = toStage2;
-        else toStage = toStage3;
-
-        autoSchedule = new SequentialCommandGroup(
-                new ActionCommand(toStage, chassis),
-                new WaitCommand(1000),
-                new ActionCommand(toPark, chassis),
-                new WaitCommand(1000),
-                new ActionCommand(end, chassis)
-        );
-        CommandScheduler.getInstance().schedule(autoSchedule);
     }
 
     public Telemetry getTelemetry() {

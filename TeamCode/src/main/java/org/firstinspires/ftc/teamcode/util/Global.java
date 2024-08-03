@@ -10,7 +10,9 @@ public class Global {
     public enum Randomization {
         LEFT, CENTER, RIGHT
     }
+
+    public static long delayMs;
     public static Field2d field = new Field2d();
-    public static Alliance alliance;
+    public static Alliance alliance = Alliance.NONE;
     public static Randomization randomization;
 }
