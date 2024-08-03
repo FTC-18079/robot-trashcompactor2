@@ -6,16 +6,26 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RobotCore;
+import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.util.Global;
+import org.firstinspires.ftc.teamcode.vision.DetectionPipeline;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 @Config
-@Autonomous(name = "Red Forward Auto", group = "Blue Autos")
+@Autonomous(name = "Red Forward Auto", group = "Red Autos")
 public class RedForwardAuto extends LinearOpMode {
     public static double startingX = 12;
     public static double startingY = -60;
     public static double startingH = Math.toRadians(90);
-    boolean liveView = false;
 
+    OpenCvCamera objCamera;
+    DetectionPipeline pipeline;
+    DetectionPipeline.Position randomization;
+    boolean cameraFailed = false;
+    int errorValue = 0;
+
+    boolean liveView = false;
     boolean lastUp = false;
     boolean lastDown = false;
     boolean lastX = false;
@@ -30,21 +40,25 @@ public class RedForwardAuto extends LinearOpMode {
         }
 
         // Init vision
-//        objCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotMap.getInstance().CAMERA_OBJECT);
-//        pipeline = new DetectionPipeline();
-//        objCamera.setPipeline(pipeline);
+        telemetry.addData("Status", "Configuring object detection");
+        telemetry.update();
 
-//        objCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-//            @Override
-//            public void onOpened() {
-//                objCamera.startStreaming(1280, 720);
-//            }
-//
-//            @Override
-//            public void onError(int errorCode) {
-//
-//            }
-//        });
+        objCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotMap.getInstance().CAMERA_OBJECT);
+        pipeline = new DetectionPipeline();
+        objCamera.setPipeline(pipeline);
+
+        objCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                objCamera.startStreaming(1280, 720);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                cameraFailed = true;
+                errorValue = errorCode;
+            }
+        });
 
         // Init robot
         Pose2d initialPose = new Pose2d(startingX, startingY, startingH);
@@ -59,21 +73,26 @@ public class RedForwardAuto extends LinearOpMode {
 
         // Get object detection and randomization
         while (opModeInInit()) {
-//            telemetry.addData("Randomization", pipeline.getPosition());
+            telemetry.addData("Randomization", pipeline.getPosition());
+            if (cameraFailed) {
+                telemetry.addData("WARNING", "Camera did not init properly. See error.");
+                telemetry.addData("Error code", errorValue);
+            }
             telemetry.update();
 
             // Don't kill CPU lol
             sleep(50);
         }
 
-        //        randomization = pipeline.getPosition();
-//        Global.randomization = randomization;
+        randomization = pipeline.getPosition();
+        Global.randomization = randomization;
 
         // Close camera to save our CPU
-//        objCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-//            @Override
-//            public void onClose() {}
-//        });
+        objCamera.stopStreaming();
+        objCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
+            @Override
+            public void onClose() {}
+        });
 
         // Run opmode
         while(opModeIsActive() && !isStopRequested()) {
