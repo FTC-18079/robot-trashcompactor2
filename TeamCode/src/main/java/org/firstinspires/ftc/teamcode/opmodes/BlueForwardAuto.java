@@ -6,11 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RobotCore;
-import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.util.Global;
-import org.firstinspires.ftc.teamcode.vision.DetectionPipeline;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 
 @Config
 @Autonomous(name = "Blue Forward Auto", group = "Blue Autos")
@@ -19,13 +16,9 @@ public class BlueForwardAuto extends LinearOpMode {
     public static double startingY = 60;
     public static double startingH = Math.toRadians(180);
 
-    OpenCvCamera objCamera;
-    DetectionPipeline pipeline;
-    DetectionPipeline.Position randomization;
+    PipelineIF.Randomization randomization;
     boolean cameraFailed = false;
     int errorValue = 0;
-
-    boolean liveView = false;
     boolean lastUp = false;
     boolean lastDown = false;
     boolean lastX = false;
@@ -35,6 +28,7 @@ public class BlueForwardAuto extends LinearOpMode {
         // Run pre-auto configs
         Global.delayMs = 0;
         Global.alliance = Global.Alliance.BLUE;
+
         while(opModeInInit() && !gamepad1.options) {
             config();
         }
@@ -42,23 +36,6 @@ public class BlueForwardAuto extends LinearOpMode {
         // Init vision
         telemetry.addData("Status", "Configuring object detection");
         telemetry.update();
-
-        objCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotMap.getInstance().CAMERA_OBJECT);
-        pipeline = new DetectionPipeline();
-        objCamera.setPipeline(pipeline);
-
-        objCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                objCamera.startStreaming(1280, 720);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                cameraFailed = true;
-                errorValue = errorCode;
-            }
-        });
 
         // Init robot
         Pose2d initialPose = new Pose2d(startingX, startingY, startingH);
@@ -73,7 +50,7 @@ public class BlueForwardAuto extends LinearOpMode {
 
         // Get object detection and randomization
         while (opModeInInit()) {
-            telemetry.addData("Randomization", pipeline.getPosition());
+            telemetry.addData("Randomization", robot.getRandomization());
             if (cameraFailed) {
                 telemetry.addData("WARNING", "Camera did not init properly. See error.");
                 telemetry.addData("Error code", errorValue);
@@ -84,15 +61,11 @@ public class BlueForwardAuto extends LinearOpMode {
             sleep(50);
         }
 
-        randomization = pipeline.getPosition();
+        randomization = robot.getRandomization();
         Global.randomization = randomization;
 
         // Close camera to save our CPU
-        objCamera.stopStreaming();
-        objCamera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
-            @Override
-            public void onClose() {}
-        });
+        robot.closeObjectDetection();
 
         // Run opmode
         while(opModeIsActive() && !isStopRequested()) {
@@ -112,14 +85,14 @@ public class BlueForwardAuto extends LinearOpMode {
         lastDown = gamepad1.dpad_down;
 
         // Toggle LiveView
-        if (lastX != gamepad1.x && gamepad1.x) liveView = !liveView;
+        if (lastX != gamepad1.x && gamepad1.x) Global.liveView = !Global.liveView;
 
         // Print telemetry
         telemetry.addData("Status", "Configuring Autonomous");
         telemetry.addData("Controls", "Delay: Up & Down.\nToggle Live View: X/Square");
         telemetry.addLine();
         telemetry.addData("Auto delay", Global.delayMs);
-        telemetry.addData("LiveView", liveView ? "Enabled" : "Disabled");
+        telemetry.addData("LiveView", Global.liveView ? "Enabled" : "Disabled");
         telemetry.addLine("Press options to finish");
         telemetry.update();
     }

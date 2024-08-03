@@ -55,6 +55,10 @@ public class RobotMap {
         this.hMap = hardwareMap;
     }
 
+    public int getMonitorId() {
+        return hMap.appContext.getResources().getIdentifier("cameraMonitorId", "id", hMap.appContext.getPackageName());
+    }
+
     public HardwareMap getHardwareMap() {
         return this.hMap;
     }

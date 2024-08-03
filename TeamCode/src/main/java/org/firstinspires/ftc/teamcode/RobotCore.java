@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -19,8 +18,9 @@ import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
+import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
-import org.firstinspires.ftc.teamcode.vision.DetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.ObjectDetection;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.Math;
@@ -31,8 +31,9 @@ public class RobotCore extends Robot {
     GamepadEx driveController;
     GamepadEx manipController;
     Pose2d initialPose;
-    SequentialCommandGroup autoSchedule;
-    public ATVision atVision;
+    ATVision atVision;
+    ObjectDetection objectDetection;
+
     // Subsystems
     Chassis chassis;
     // Commands
@@ -58,6 +59,8 @@ public class RobotCore extends Robot {
         robotMap.init(hardwareMap);
 
         atVision = new ATVision();
+        objectDetection = new ObjectDetection(Global.liveView);
+
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
         while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Status", "Initializing AprilTags");
@@ -153,6 +156,18 @@ public class RobotCore extends Robot {
         } else {
             return 0.0;
         }
+    }
+
+    public ATVision getAprilTag() {
+        return atVision;
+    }
+
+    public PipelineIF.Randomization getRandomization() {
+        return objectDetection.getPosition();
+    }
+
+    public void closeObjectDetection() {
+        objectDetection.closeCamera();
     }
 
     @Override

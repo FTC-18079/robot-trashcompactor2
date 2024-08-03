@@ -5,9 +5,7 @@ import static org.firstinspires.ftc.teamcode.vision.VisionConstants.getCenterSta
 import android.util.Size;
 
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -23,7 +21,7 @@ public class ATVision {
     private AprilTagProcessor tagProcessor;
     private VisionPortal visionPortal;
     public AprilTagDetection lastDetection;
-    public final VisionStream stream = new VisionStream();
+    public final ATLivestream stream = new ATLivestream();
 
     public ATVision() {
         // Create AT Processor
