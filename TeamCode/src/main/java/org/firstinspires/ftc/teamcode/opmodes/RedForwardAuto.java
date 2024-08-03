@@ -1,39 +1,30 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RobotCore;
-import org.firstinspires.ftc.teamcode.auto.AutoConstants;
 import org.firstinspires.ftc.teamcode.util.Global;
-import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 
-@Autonomous(name = "Autonomous", group = "Autos")
-public class AutoCore extends LinearOpMode {
-    public enum AutoSequence {
-        FORWARD, LEFT
-    }
-
-    // OpenCvCamera
-    // DetectionPipeline
-    // DetectionPipeline.Position
-
-    long delayMs = 0;
+@Config
+@Autonomous(name = "Red Forward Auto", group = "Blue Autos")
+public class RedForwardAuto extends LinearOpMode {
+    public static double startingX = 12;
+    public static double startingY = -60;
+    public static double startingH = Math.toRadians(90);
     boolean liveView = false;
 
     boolean lastUp = false;
     boolean lastDown = false;
     boolean lastX = false;
 
-    AutoPath autoSequence;
-
     @Override
-    public void runOpMode() {
-
+    public void runOpMode() throws InterruptedException {
         // Run pre-auto configs
+        Global.delayMs = 0;
+        Global.alliance = Global.Alliance.RED;
         while(opModeInInit() && !gamepad1.options) {
             config();
         }
@@ -55,13 +46,10 @@ public class AutoCore extends LinearOpMode {
 //            }
 //        });
 
-        // Schedule the auto delay
-        CommandScheduler.getInstance().schedule(new WaitCommand(delayMs));
-
         // Init robot
-        Pose2d initialPose = AutoConstants.startingPose;
+        Pose2d initialPose = new Pose2d(startingX, startingY, startingH);
         RobotCore robot = new RobotCore(
-                RobotCore.OpModeType.AUTO,
+                RobotCore.OpModeType.RED_FORWARD,
                 hardwareMap,
                 telemetry,
                 gamepad1,
@@ -77,7 +65,8 @@ public class AutoCore extends LinearOpMode {
             // Don't kill CPU lol
             sleep(50);
         }
-//        randomization = pipeline.getPosition();
+
+        //        randomization = pipeline.getPosition();
 //        Global.randomization = randomization;
 
         // Close camera to save our CPU
@@ -85,9 +74,6 @@ public class AutoCore extends LinearOpMode {
 //            @Override
 //            public void onClose() {}
 //        });
-
-        // Schedule auto
-        robot.scheduleAuto(autoSequence.generate());
 
         // Run opmode
         while(opModeIsActive() && !isStopRequested()) {
@@ -101,23 +87,19 @@ public class AutoCore extends LinearOpMode {
 
     private void config() {
         // Add or remove delays
-        if (lastUp != gamepad1.dpad_up && gamepad1.dpad_up) delayMs += 100;
-        if (lastDown != gamepad1.dpad_down && gamepad1.dpad_down && delayMs > 0) delayMs -= 100;
+        if (lastUp != gamepad1.dpad_up && gamepad1.dpad_up) Global.delayMs += 100;
+        if (lastDown != gamepad1.dpad_down && gamepad1.dpad_down && Global.delayMs > 0) Global.delayMs -= 100;
         lastUp = gamepad1.dpad_up;
         lastDown = gamepad1.dpad_down;
-
-        // Select alliance
-        if (gamepad1.left_bumper) Global.alliance = Global.Alliance.RED;
-        if (gamepad1.right_bumper) Global.alliance = Global.Alliance.BLUE;
 
         // Toggle LiveView
         if (lastX != gamepad1.x && gamepad1.x) liveView = !liveView;
 
         // Print telemetry
         telemetry.addData("Status", "Configuring Autonomous");
-        telemetry.addData("Controls", "Delay: Up & Down.\nAlliance: Left & Right Bumper.\nToggle Live View: X/Square");
-        telemetry.addData("Selected Alliance", Global.alliance == Global.Alliance.RED ? "\uD83D\uDD34 Red" : "\uD83D\uDD35 Blue");
-        telemetry.addData("Auto delay", delayMs);
+        telemetry.addData("Controls", "Delay: Up & Down.\nToggle Live View: X/Square");
+        telemetry.addLine();
+        telemetry.addData("Auto delay", Global.delayMs);
         telemetry.addData("LiveView", liveView ? "Enabled" : "Disabled");
         telemetry.addLine("Press options to finish");
         telemetry.update();
