@@ -84,7 +84,7 @@ public class Auto extends LinearOpMode {
         // Init robot
         Pose2d initialPose = new Pose2d(12.0, -61.34, Math.toRadians(90));
         RobotCore robot = new RobotCore(
-                RobotCore.OpModeType.AUTO,
+                RobotCore.OpModeType.TELEOP,
                 hardwareMap,
                 telemetry,
                 gamepad1,
@@ -115,7 +115,7 @@ public class Auto extends LinearOpMode {
         });
 
         // Schedule auto
-        robot.scheduleAuto();
+//        robot.scheduleAuto();
 
         // Run until end or stopped
         while(opModeIsActive() && !isStopRequested()) {
