@@ -25,7 +25,7 @@ public class Chassis extends SubsystemBase {
     public Chassis(RobotCore robot, Pose2d initialPose) {
         this.telemetry = robot.getTelemetry();
         isFieldCentric = true;
-        drive = new ATDrive(initialPose, robot.atVision);
+        drive = new ATDrive(initialPose, robot.getAprilTag());
     }
 
     /**

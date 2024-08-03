@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.ftclib.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
+import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 
 public class BlueForwardSequence implements AutoPath {
     Chassis chassis;
@@ -17,6 +18,7 @@ public class BlueForwardSequence implements AutoPath {
 
     @Override
     public Command generate() {
+        PipelineIF.Randomization randomization = Global.randomization;
         return new WaitCommand(Global.delayMs)
                 .andThen(new ActionCommand(
                         chassis.actionBuilder(chassis.getPoseEstimate())

@@ -4,15 +4,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 public class RobotMap {
     private HardwareMap hMap;
     // Sensors
     public VoltageSensor VOLTAGE;
-    public CameraName CAMERA_AT;
-    public CameraName CAMERA_OBJECT;
+    public WebcamName CAMERA_AT;
+    public WebcamName CAMERA_OBJECT;
 
     // Drive Motors
     public DcMotorEx MOTOR_FL;
@@ -54,6 +53,10 @@ public class RobotMap {
         perp = hardwareMap.get(DcMotorEx.class, "backLeft");
 
         this.hMap = hardwareMap;
+    }
+
+    public int getMonitorId() {
+        return hMap.appContext.getResources().getIdentifier("cameraMonitorId", "id", hMap.appContext.getPackageName());
     }
 
     public HardwareMap getHardwareMap() {
