@@ -4,8 +4,11 @@ import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.vision.Pipeline;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
+import org.firstinspires.ftc.teamcode.vision.pipelines.BlueDetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.pipelines.RedDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 public class ObjectDetection {
     private OpenCvCamera objCamera;
@@ -26,7 +29,7 @@ public class ObjectDetection {
         objCamera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                objCamera.startStreaming(1280, 720);
+                objCamera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override

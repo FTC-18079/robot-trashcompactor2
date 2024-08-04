@@ -11,9 +11,7 @@ import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.roadrunner.Localizer;
@@ -38,9 +36,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     private boolean initialized;
 
     public ThreeDeadWheelLocalizer(double inPerTick) {
-        par0 = new OverflowEncoder(new RawEncoder(robotMap.par0));
-        par1 = new OverflowEncoder(new RawEncoder(robotMap.par1));
-        perp = new OverflowEncoder(new RawEncoder(robotMap.perp));
+        par0 = new OverflowEncoder(new RawEncoder(robotMap.PAR0));
+        par1 = new OverflowEncoder(new RawEncoder(robotMap.PAR1));
+        perp = new OverflowEncoder(new RawEncoder(robotMap.PERP));
 
         par0.setDirection(DcMotorSimple.Direction.REVERSE);
         perp.setDirection(DcMotorSimple.Direction.REVERSE);

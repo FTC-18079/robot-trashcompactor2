@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
+import com.arcrobotics.ftclib.command.SelectCommand;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -16,6 +18,7 @@ import org.firstinspires.ftc.teamcode.auto.BlueForwardSequence;
 import org.firstinspires.ftc.teamcode.auto.RedForwardSequence;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
+import org.firstinspires.ftc.teamcode.intake.Intake;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
@@ -36,12 +39,15 @@ public class RobotCore extends Robot {
 
     // Subsystems
     Chassis chassis;
+    Intake intake;
     // Commands
     TeleOpDriveCommand driveCommand;
+    SelectCommand intakeCommand;
     // Drive
     private static final double DRIVE_SENSITIVITY = 1.1;
     private static final double ROTATIONAL_SENSITIVITY = 2.0;
-    private static final double DEADZONE = 0.09;
+    private static final double JOYSTICK_DEADZONE = 0.09;
+    private static final double TRIGGER_DEADZONE = 0.05;
     // Loop times
     private double loopTime = 0.0;
     private final ElapsedTime timer = new ElapsedTime();
@@ -86,14 +92,17 @@ public class RobotCore extends Robot {
         this.telemetry.addData("Status", "Initializing Subsystems");
         this.telemetry.update();
         chassis = new Chassis(this, initialPose);
+        intake = new Intake(this);
 
         register(chassis);
+        register(intake);
     }
 
     private void setupOpMode(OpModeType type) {
         switch (type) {
             case TELEOP:
                 setDriveControls();
+                closeObjectDetection();
                 break;
             case RED_FORWARD:
                 autoPath = new RedForwardSequence(chassis);
@@ -121,6 +130,18 @@ public class RobotCore extends Robot {
         // Reset robot heading
         driveController.getGamepadButton(GamepadKeys.Button.Y)
                         .whenPressed(chassis::resetHeading);
+
+        // Intake controls
+        new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_DEADZONE)
+                .whenActive(intake::in)
+                .whenInactive(intake::stop);
+        new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_DEADZONE)
+                .whenActive(intake::eject)
+                .whenInactive(intake::stop);
+
+        // TODO: Delete this
+        driveController.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(intake::setupMotors);
 
         // Set default commands
         chassis.setDefaultCommand(driveCommand);
