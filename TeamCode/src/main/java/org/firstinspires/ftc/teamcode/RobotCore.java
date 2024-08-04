@@ -136,7 +136,7 @@ public class RobotCore extends Robot {
                 .whenActive(intake::in)
                 .whenInactive(intake::stop);
         new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_DEADZONE)
-                .whenActive(intake::out)
+                .whenActive(intake::eject)
                 .whenInactive(intake::stop);
 
         // TODO: Delete this

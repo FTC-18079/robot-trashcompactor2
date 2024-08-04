@@ -30,6 +30,7 @@ public class TeleOpMode extends LinearOpMode {
 
         while (opModeInInit()) {
             telemetry.addData("Alliance", Global.alliance);
+            telemetry.addData("AprilTag FPS", robot.getAprilTag().getFPS());
             telemetry.update();
         }
 

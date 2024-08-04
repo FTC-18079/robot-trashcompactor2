@@ -7,13 +7,13 @@ public class IntakeConstants {
     public static class Collector {
         public double RPM = 250.0;
         // PID
-        public double kP = 2.0;
+        public double kP = 0.02;
         public double kI = 0.0;
-        public double kD = 0.0;
+        public double kD = 0.01;
 
         // Feedforward
         public double kS = 0.0;
-        public double kV = 0.0;
+        public double kV = 1.02;
         public double kA = 0.0;
     }
 
