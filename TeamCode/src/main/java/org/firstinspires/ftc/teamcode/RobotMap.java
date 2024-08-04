@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -20,14 +21,13 @@ public class RobotMap {
     public DcMotorEx MOTOR_BR;
 
     // Odometry pods
-    public DcMotorEx par0;
-    public DcMotorEx par1;
-    public DcMotorEx perp;
+    public DcMotorEx PAR0;
+    public DcMotorEx PAR1;
+    public DcMotorEx PERP;
 
-    // Manipulators
-    public static final String PIVOT = "pivot";
-    public static final String SHOOTER = "shooter";
-    public static final String INDEXER = "indexer";
+    // Intake
+    public MotorEx COLLECTOR;
+    public MotorEx FEEDER;
 
     private static RobotMap instance = null;
 
@@ -48,15 +48,18 @@ public class RobotMap {
         MOTOR_FR = hardwareMap.get(DcMotorEx.class, "frontRight");
         MOTOR_BR = hardwareMap.get(DcMotorEx.class, "backRight");
 
-        par0 = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        par1 = hardwareMap.get(DcMotorEx.class, "backRight");
-        perp = hardwareMap.get(DcMotorEx.class, "backLeft");
+        PAR0 = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        PAR1 = hardwareMap.get(DcMotorEx.class, "backRight");
+        PERP = hardwareMap.get(DcMotorEx.class, "backLeft");
+
+        COLLECTOR = new MotorEx(hardwareMap, "collector");
+//        FEEDER = new MotorEx(hardwareMap, "feeder");
 
         this.hMap = hardwareMap;
     }
 
     public int getMonitorId() {
-        return hMap.appContext.getResources().getIdentifier("cameraMonitorId", "id", hMap.appContext.getPackageName());
+        return hMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hMap.appContext.getPackageName());
     }
 
     public HardwareMap getHardwareMap() {
