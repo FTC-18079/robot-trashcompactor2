@@ -5,13 +5,12 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.util.KalmanFilter;
-import org.firstinspires.ftc.teamcode.vision.ATVision;
-import org.firstinspires.ftc.teamcode.vision.VisionConstants;
+import org.firstinspires.ftc.teamcode.vision2.ATVision;
+import org.firstinspires.ftc.teamcode.vision2.VisionConstants;
 
 /**
  * This class serves as an extension of Roadrunner's {@link MecanumDrive} class with {@link ATVision} localization.

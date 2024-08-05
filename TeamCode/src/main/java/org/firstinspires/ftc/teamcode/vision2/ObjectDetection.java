@@ -1,11 +1,8 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision2;
 
 import org.firstinspires.ftc.teamcode.RobotMap;
-import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.vision.Pipeline;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
-import org.firstinspires.ftc.teamcode.vision.pipelines.BlueDetectionPipeline;
-import org.firstinspires.ftc.teamcode.vision.pipelines.RedDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -21,8 +18,8 @@ public class ObjectDetection {
 
 
         // Set pipeline
-        if (Global.alliance == Global.Alliance.RED) pipeline = new RedDetectionPipeline();
-        else pipeline = new BlueDetectionPipeline();
+//        if (Global.alliance == Global.Alliance.RED) pipeline = new RedDetectionPipeline();
+//        else pipeline = new BlueDetectionPipeline();
 
         // Start streaming
         objCamera.setPipeline(pipeline);

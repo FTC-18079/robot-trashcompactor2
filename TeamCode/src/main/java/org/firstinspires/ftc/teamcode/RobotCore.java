@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.intake.Intake;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
-import org.firstinspires.ftc.teamcode.vision.ATVision;
-import org.firstinspires.ftc.teamcode.vision.ObjectDetection;
+import org.firstinspires.ftc.teamcode.vision2.ATVision;
+import org.firstinspires.ftc.teamcode.vision2.ObjectDetection;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.Math;

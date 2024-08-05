@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision2;
 
-import static org.firstinspires.ftc.teamcode.vision.VisionConstants.getCenterStageTagLibrary;
+import static org.firstinspires.ftc.teamcode.vision2.VisionConstants.getCenterStageTagLibrary;
 
 import android.util.Size;
 
