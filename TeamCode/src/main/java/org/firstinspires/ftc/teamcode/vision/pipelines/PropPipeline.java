@@ -17,7 +17,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 @Config
-public class BluePipeline extends Pipeline {//, PipelineIF {
+public class PropPipeline extends Pipeline {//, PipelineIF {
     private volatile Randomization position = Randomization.RIGHT;
 
     private Scalar lowHSV;
@@ -42,7 +42,7 @@ public class BluePipeline extends Pipeline {//, PipelineIF {
     float[] sumValNorm = new float[2];
     Telemetry telemetry;
 
-    public BluePipeline(Telemetry telemetry) {
+    public PropPipeline(Telemetry telemetry) {
         if (Global.alliance == Global.Alliance.BLUE) {
             lowHSV = VisionConstants.lowBlueHSV;
             highHSV = VisionConstants.highBlueHSV;

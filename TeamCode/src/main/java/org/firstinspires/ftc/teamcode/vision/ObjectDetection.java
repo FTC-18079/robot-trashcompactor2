@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.util.vision.Pipeline;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
-import org.firstinspires.ftc.teamcode.vision.pipelines.BluePipeline;
+import org.firstinspires.ftc.teamcode.vision.pipelines.PropPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -20,7 +20,7 @@ public class ObjectDetection {
 
 
         // Set pipeline
-        pipeline = new BluePipeline(robot.getTelemetry());
+        pipeline = new PropPipeline(robot.getTelemetry());
 
         // Start streaming
         objCamera.setPipeline(pipeline);
