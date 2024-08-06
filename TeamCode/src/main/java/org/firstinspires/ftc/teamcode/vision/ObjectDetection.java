@@ -20,7 +20,7 @@ public class ObjectDetection {
 
 
         // Set pipeline
-        pipeline = new PropPipeline(robot.getTelemetry());
+        pipeline = new PropPipeline();
 
         // Start streaming
         objCamera.setPipeline(pipeline);
