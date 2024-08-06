@@ -4,7 +4,9 @@ import android.graphics.Canvas;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -18,9 +20,11 @@ public class RedPipeline extends OpenCvPipeline {
     public static Scalar strictHighHSV = new Scalar(180, 255, 255); // Strict higher bound for HSV for yellow
 
     // Mats we need
-    private Mat bgrMat = new Mat();
-    private Mat hsvMat = new Mat();             // input mat in HSV format
+    private Mat erosionKernel = new Mat();
+    private Mat bgrMat = new Mat();             // input in BGR
+    private Mat hsvMat = new Mat();             // BGR mat in HSV format
     private Mat binaryMat = new Mat();          // filters out everything to black and white
+    private Mat erodedMat = new Mat();          // removes small pixels to further filter
     private Mat maskedInputMat = new Mat();     // colors in binary mat with input's colors
     private Mat scaledMask = new Mat();         // maskedInputMat with rescaled saturation
     private Mat scaledBinary = new Mat();       // scaledMask with stricter HSV range
@@ -36,9 +40,14 @@ public class RedPipeline extends OpenCvPipeline {
         // Create a black and white of everything out of color range
         Core.inRange(hsvMat, lowHSV, highHSV, binaryMat);
 
+        // Erode and dilate image to get rid of small pixels
+        erosionKernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8, 7), new Point(-1, -1));
+        Imgproc.erode(binaryMat, erodedMat, erosionKernel);
+        Imgproc.dilate(erodedMat, erodedMat, erosionKernel);
+
         // Color in binary mat
         maskedInputMat.release();
-        Core.bitwise_and(hsvMat, hsvMat, maskedInputMat, binaryMat);
+        Core.bitwise_and(hsvMat, hsvMat, maskedInputMat, erodedMat);
 
         // Calculate average HSV and scale average saturation to 255
         Scalar average = Core.mean(maskedInputMat, binaryMat);
