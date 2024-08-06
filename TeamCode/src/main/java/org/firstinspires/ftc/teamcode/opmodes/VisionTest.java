@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 //import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
-import org.firstinspires.ftc.teamcode.vision.RedPipeline;
+import org.firstinspires.ftc.teamcode.vision.pipelines.RedPipeline;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision.pipelines;
 
 import android.graphics.Canvas;
 
@@ -15,9 +15,9 @@ public class BluePipeline extends OpenCvPipeline {//, PipelineIF {
     public static Scalar highHSV = new Scalar(130, 255, 255); // lenient higher bound HSV for yellow
 
     // Mats we need
-    Mat hsvMat = new Mat();
-    Mat binaryMat = new Mat();
-    Mat maskedInputMat = new Mat();
+    private Mat hsvMat = new Mat();
+    private Mat binaryMat = new Mat();
+    private Mat maskedInputMat = new Mat();
 
     @Override
     public Mat processFrame(Mat input) {

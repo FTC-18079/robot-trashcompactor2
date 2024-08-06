@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision.pipelines;
 
 import android.graphics.Canvas;
 
@@ -8,7 +8,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class RedPipeline extends OpenCvPipeline {//, PipelineIF {
+public class RedPipeline extends OpenCvPipeline {
 //    private volatile Randomization position = Randomization.RIGHT;
 
     public static Scalar lowHSV = new Scalar(0, 150, 0); // lenient lower bound HSV for yellow
@@ -18,18 +18,20 @@ public class RedPipeline extends OpenCvPipeline {//, PipelineIF {
     public static Scalar strictHighHSV = new Scalar(180, 255, 255); // Strict higher bound for HSV for yellow
 
     // Mats we need
-    Mat hsvMat = new Mat();             // input mat in HSV format
-    Mat binaryMat = new Mat();          // filters out everything to black and white
-    Mat maskedInputMat = new Mat();     // colors in binary mat with input's colors
-    Mat scaledMask = new Mat();         // maskedInputMat with rescaled saturation
-    Mat scaledBinary = new Mat();       // scaledMask with stricter HSV range
-    Mat finalMask = new Mat();          // colored in scaledBinary
-    Mat finalRgb = new Mat();           // finalMask in rgb format
+    private Mat bgrMat = new Mat();
+    private Mat hsvMat = new Mat();             // input mat in HSV format
+    private Mat binaryMat = new Mat();          // filters out everything to black and white
+    private Mat maskedInputMat = new Mat();     // colors in binary mat with input's colors
+    private Mat scaledMask = new Mat();         // maskedInputMat with rescaled saturation
+    private Mat scaledBinary = new Mat();       // scaledMask with stricter HSV range
+    private Mat finalMask = new Mat();          // colored in scaledBinary
+    private Mat finalRgb = new Mat();           // finalMask in rgb format
 
     @Override
     public Mat processFrame(Mat input) {
         // Convert mat into HSV
-        Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, bgrMat, Imgproc.COLOR_RGBA2BGR);
+        Imgproc.cvtColor(bgrMat, hsvMat, Imgproc.COLOR_BGR2HSV);
 
         // Create a black and white of everything out of color range
         Core.inRange(hsvMat, lowHSV, highHSV, binaryMat);

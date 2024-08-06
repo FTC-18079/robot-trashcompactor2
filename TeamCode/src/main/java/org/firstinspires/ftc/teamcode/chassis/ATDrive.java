@@ -9,8 +9,8 @@ import com.acmerobotics.roadrunner.Vector2d;
 import org.firstinspires.ftc.teamcode.chassis.kinematics.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.util.KalmanFilter;
-import org.firstinspires.ftc.teamcode.vision2.ATVision;
-import org.firstinspires.ftc.teamcode.vision2.VisionConstants;
+import org.firstinspires.ftc.teamcode.vision.ATVision;
+import org.firstinspires.ftc.teamcode.vision.VisionConstants;
 
 /**
  * This class serves as an extension of Roadrunner's {@link MecanumDrive} class with {@link ATVision} localization.
