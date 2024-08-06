@@ -72,7 +72,7 @@ public class RobotCore extends Robot {
 
         telemetry.addData("Status", "Initializing Object Detection");
         telemetry.update();
-        objectDetection = new ObjectDetection(Global.liveView);
+        objectDetection = new ObjectDetection(this, Global.liveView);
 
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
 
