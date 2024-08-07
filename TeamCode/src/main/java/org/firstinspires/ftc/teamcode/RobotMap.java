@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -29,6 +30,11 @@ public class RobotMap {
     public MotorEx COLLECTOR;
     public MotorEx FEEDER;
 
+    // Plate movers
+    public Servo PLATE_LEFT;
+    public Servo PLATE_RIGHT;
+    public Servo PLATE_REAR;
+
     private static RobotMap instance = null;
 
     public static RobotMap getInstance() {
@@ -54,6 +60,10 @@ public class RobotMap {
 
         COLLECTOR = new MotorEx(hardwareMap, "collector");
 //        FEEDER = new MotorEx(hardwareMap, "feeder");
+
+        PLATE_RIGHT = hardwareMap.get(Servo.class, "plateRight");
+        PLATE_REAR = hardwareMap.get(Servo.class, "plateRear");
+        PLATE_LEFT = hardwareMap.get(Servo.class, "plateLeft");
 
         this.hMap = hardwareMap;
     }

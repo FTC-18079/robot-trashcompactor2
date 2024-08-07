@@ -12,7 +12,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class HardwareTest extends LinearOpMode {
     public static String MOTOR_NAME = "driveFL";
     public static boolean BRAKES_ENABLED = true;
-    public static String SERVO_NAME = "";
+    public static String SERVO_NAME = "plateLeft";
+    // RIGHT POS
+    public static double LB_POS = 0.0;
+    // LEFT POS
+    public static double RB_POS = 1.0;
     DcMotorEx motor;
     Servo servo;
 
@@ -30,9 +34,14 @@ public class HardwareTest extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             motor.setPower(-gamepad1.left_stick_y);
 
+            telemetry.addData("LB", gamepad1.left_bumper);
+            telemetry.addData("RB", gamepad1.right_bumper);
             telemetry.addData("Motor power", motor.getPower());
             telemetry.addData("Motor velocity", motor.getVelocity());
             telemetry.update();
+
+            if (gamepad1.left_bumper) servo.setPosition(LB_POS);
+            if (gamepad1.right_bumper) servo.setPosition(RB_POS);
 
             if (gamepad1.a) initHardware();
         }
@@ -42,6 +51,6 @@ public class HardwareTest extends LinearOpMode {
         motor = hardwareMap.get(DcMotorEx.class, MOTOR_NAME);
         motor.setZeroPowerBehavior(BRAKES_ENABLED ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
 
-//        servo = hardwareMap.get(Servo.class, SERVO_NAME);
+        servo = hardwareMap.get(Servo.class, SERVO_NAME);
     }
 }
