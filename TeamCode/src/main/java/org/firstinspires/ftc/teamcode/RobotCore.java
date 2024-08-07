@@ -19,6 +19,9 @@ import org.firstinspires.ftc.teamcode.auto.RedForwardSequence;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.intake.Intake;
+import org.firstinspires.ftc.teamcode.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.shooter.commands.ShootCommand;
+import org.firstinspires.ftc.teamcode.shooter.commands.ShootingModeToggleCommand;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
@@ -40,9 +43,11 @@ public class RobotCore extends Robot {
     // Subsystems
     Chassis chassis;
     Intake intake;
+    Shooter shooter;
     // Commands
     TeleOpDriveCommand driveCommand;
-    SelectCommand intakeCommand;
+    ShootingModeToggleCommand shootingModeToggleCommand;
+    ShootCommand shootCommand;
     // Drive
     private static final double DRIVE_SENSITIVITY = 1.1;
     private static final double ROTATIONAL_SENSITIVITY = 2.0;
@@ -93,9 +98,11 @@ public class RobotCore extends Robot {
         this.telemetry.update();
         chassis = new Chassis(this, initialPose);
         intake = new Intake(this);
+        shooter = new Shooter(this);
 
         register(chassis);
         register(intake);
+        register(shooter);
     }
 
     private void setupOpMode(OpModeType type) {
@@ -139,9 +146,13 @@ public class RobotCore extends Robot {
                 .whenActive(intake::eject)
                 .whenInactive(intake::stop);
 
-        // TODO: Delete this
+        // TODO: Delete this after everything is tuned
         driveController.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(intake::setupMotors);
+
+        // Toggle shooting mode
+        driveController.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new ShootingModeToggleCommand(shooter));
 
         // Set default commands
         chassis.setDefaultCommand(driveCommand);
@@ -177,6 +188,10 @@ public class RobotCore extends Robot {
         } else {
             return 0.0;
         }
+    }
+
+    public boolean isInShootingMode() {
+        return shooter.isInShootingMode();
     }
 
     public ATVision getAprilTag() {

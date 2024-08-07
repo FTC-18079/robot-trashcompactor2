@@ -7,11 +7,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.RobotMap;
 
+import static org.firstinspires.ftc.teamcode.shooter.ShooterConstants.*;
+
 public class Shooter extends SubsystemBase {
     Telemetry telemetry;
     Servo plateLeft;
     Servo plateRight;
-    Servo plateRear;
     boolean inShootingMode;
     double pivotAngle;
 
@@ -20,7 +21,6 @@ public class Shooter extends SubsystemBase {
 
         plateLeft = RobotMap.getInstance().PLATE_LEFT;
         plateRight = RobotMap.getInstance().PLATE_RIGHT;
-        plateRear = RobotMap.getInstance().PLATE_REAR;
     }
 
     public void shoot() {
@@ -45,12 +45,12 @@ public class Shooter extends SubsystemBase {
 
     public boolean isReady() {
         // return shooter.atTargetVelocity() && pivot.atTargetAngle()
-        return false;
+        return true;
     }
 
     public boolean pivotReady() {
         // return pivot.atTargetAngle()
-        return false;
+        return true;
     }
 
     public void toggleShootingMode() {
@@ -58,11 +58,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public void plateOut() {
-        // plate.setPosition(1)
+        plateLeft.setPosition(PLATE.LEFT_PLATE_OUT);
+        plateRight.setPosition(PLATE.RIGHT_PLATE_OUT);
     }
 
-    public void plateRetract() {
-        // plate.setPosition(0)
+    public void plateStow() {
+        plateLeft.setPosition(PLATE.LEFT_PLATE_STOW);
+        plateRight.setPosition(PLATE.RIGHT_PLATE_STOW);
     }
 
     public void aimPivot(double angle) {

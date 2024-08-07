@@ -8,11 +8,10 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
 import org.firstinspires.ftc.teamcode.shooter.Shooter;
 
-public class ShootingModeToggleCommand extends SequentialCommandGroup {
-    private final Shooter shooter;
-    public ShootingModeToggleCommand(Shooter shooter) {
-        this.shooter = shooter;
+import java.util.function.BooleanSupplier;
 
+public class ShootingModeToggleCommand extends SequentialCommandGroup {
+    public ShootingModeToggleCommand(Shooter shooter) {
         addCommands(
                 new ConditionalCommand(
                         // Disable shooting mode
@@ -21,7 +20,7 @@ public class ShootingModeToggleCommand extends SequentialCommandGroup {
                                 new InstantCommand(shooter::openSeal),      // open ring seal
                                 new InstantCommand(shooter::pivotDown),     // bring pivot down
                                 new WaitUntilCommand(shooter::pivotReady),  // wait until pivot is at zero
-                                new InstantCommand(shooter::plateRetract)   // retract plate
+                                new InstantCommand(shooter::plateStow)   // retract plate
                         ),
                         // Enable shooting
                         new SequentialCommandGroup(
