@@ -26,6 +26,7 @@ public class PropPipeline extends Pipeline {
     // Mats we need
     private Mat erosionKernel = new Mat();
     private Mat firstCrop = new Mat();  // input cropped to make filtering easier
+    private Mat blurredMat = new Mat(); // blurs image to make detection easier
     private Mat bgrMat = new Mat();     // cropped input converted in BGR since RGBA can't directly convert to HSV
     private Mat hsvMat = new Mat();     // BGR mat in HSV format
     private Mat binaryMat = new Mat();  // filters out everything to black and white
@@ -35,7 +36,7 @@ public class PropPipeline extends Pipeline {
 
     double maxVal = 0.0;
     int maxIndex = -1;
-    public static double object = 0.002;
+    public static double object = 0.01;
     Scalar sumValue = new Scalar(0);
     float totalPixels = 0.0f;
     float[] sumValNorm = new float[2];
@@ -56,19 +57,22 @@ public class PropPipeline extends Pipeline {
     public Mat processFrame(Mat input) {
         // Crop input to make filtering easier
         input.submat(
-                new Range((int) (0.33 * input.rows()), input.rows()),
-                new Range(0, input.cols())
+                new Range((int) (0.4 * input.rows()), input.rows()),
+                new Range((int) (0.1 * input.rows()), (int) (0.8 * input.cols()))
         ).copyTo(firstCrop);
 
+        // Blur mat
+        Imgproc.blur(firstCrop, blurredMat, new Size(10, 10));
+
         // Convert mat to BGR then to HSV
-        Imgproc.cvtColor(firstCrop, bgrMat, Imgproc.COLOR_RGBA2BGR);
+        Imgproc.cvtColor(blurredMat, bgrMat, Imgproc.COLOR_RGBA2BGR);
         Imgproc.cvtColor(bgrMat, hsvMat, Imgproc.COLOR_BGR2HSV);
 
         // Filter out everything not in range
         Core.inRange(hsvMat, lowHSV, highHSV, binaryMat);
 
         // Erode out small pixels
-        Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8, 7), new Point(-1, -1)).copyTo(erosionKernel);
+        Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(15, 15), new Point(-1, -1)).copyTo(erosionKernel);
         Imgproc.erode(binaryMat, erodedMat, erosionKernel);
         Imgproc.dilate(erodedMat, erodedMat, erosionKernel);
 
