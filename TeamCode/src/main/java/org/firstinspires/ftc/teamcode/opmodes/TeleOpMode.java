@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.*;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotCore;
-import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.util.Global;
 
 import java.lang.Math;
@@ -16,7 +16,7 @@ import java.lang.Math;
 public class TeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(12, -61.34, Math.toRadians(90)); // Global.field.getRobotPose();
+        Pose2d initialPose = new Pose2d(12, -61.34, new Rotation2d(Math.toRadians(90))); // Global.field.getRobotPose();
 
         // Init robot
         RobotCore robot = new RobotCore(
@@ -43,7 +43,7 @@ public class TeleOpMode extends LinearOpMode {
             // Draw robot
             TelemetryPacket packet = new TelemetryPacket();
             packet.fieldOverlay().setStroke("#3F51B5");
-            Drawing.drawRobot(packet.fieldOverlay(), robot.getPoseEstimate());
+//            Drawing.drawRobot(packet.fieldOverlay(), robot.getPoseEstimate());
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }
 

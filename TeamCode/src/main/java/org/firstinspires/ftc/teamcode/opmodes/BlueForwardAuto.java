@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Pose2d;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -34,7 +35,7 @@ public class BlueForwardAuto extends LinearOpMode {
         }
 
         // Init robot
-        Pose2d initialPose = new Pose2d(startingX, startingY, startingH);
+        Pose2d initialPose = new Pose2d(startingX, startingY, new Rotation2d(startingH));
         RobotCore robot = new RobotCore(
                 RobotCore.OpModeType.BLUE_FORWARD,
                 hardwareMap,
