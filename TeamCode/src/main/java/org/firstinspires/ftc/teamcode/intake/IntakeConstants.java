@@ -7,17 +7,17 @@ public class IntakeConstants {
     public static class Collector {
         public double RPM = 250.0;
         // PID
-        public double kP = 0.02;
+        public double kP = 0.005;
         public double kI = 0.0;
         public double kD = 0.01;
 
         // Feedforward
         public double kS = 0.0;
-        public double kV = 1.02;
+        public double kV = 1.05;
         public double kA = 0.0;
     }
 
-    public static class Feeder {
+    public static class Ramp {
         public double RPM = 250.0;
         // PID
         public double kP = 2.0;
@@ -31,7 +31,7 @@ public class IntakeConstants {
     }
 
     public static Collector COLLECTOR = new Collector();
-    public static Feeder FEEDER = new Feeder();
+    public static Ramp RAMP = new Ramp();
 
     public static int MOTOR_TICKS = 560;
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.intake;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
@@ -13,12 +14,14 @@ import static org.firstinspires.ftc.teamcode.intake.IntakeConstants.*;
 public class Intake extends SubsystemBase {
     Telemetry telemetry;
     MotorEx collector;
-    MotorEx feeder;
+    MotorEx ramp;
+    CRServo feeder;
 
     public Intake(RobotCore robot) {
         this.telemetry = robot.getTelemetry();
         collector = RobotMap.getInstance().COLLECTOR;
-//        feeder = RobotMap.getInstance().FEEDER;
+        ramp = RobotMap.getInstance().RAMP;
+        feeder = RobotMap.getInstance().FEEDER;
 
         setupMotors();
     }
@@ -31,33 +34,37 @@ public class Intake extends SubsystemBase {
         collector.setRunMode(Motor.RunMode.VelocityControl);
         collector.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-//        feeder.stopAndResetEncoder();
-//        feeder.setInverted(false);
-//        feeder.setVeloCoefficients(FEEDER.kP, FEEDER.kI, FEEDER.kD);
-//        feeder.setFeedforwardCoefficients(FEEDER.kS, FEEDER.kV, FEEDER.kA);
-//        feeder.setRunMode(Motor.RunMode.VelocityControl);
-//        feeder.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        ramp.stopAndResetEncoder();
+        ramp.setInverted(true);
+        ramp.setVeloCoefficients(RAMP.kP, RAMP.kI, RAMP.kD);
+        ramp.setFeedforwardCoefficients(RAMP.kS, RAMP.kV, RAMP.kA);
+        ramp.setRunMode(Motor.RunMode.VelocityControl);
+        ramp.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     public void in() {
         collector.setVelocity(toTicksPerSec(-COLLECTOR.RPM));
-//        feeder.setVelocity(FEEDER.RPM);
+        ramp.setVelocity(RAMP.RPM);
+        feeder.setPower(1);
     }
 
     public void eject() {
         collector.setVelocity(toTicksPerSec(COLLECTOR.RPM));
-//        feeder.setVelocity(-FEEDER.RPM);
+        ramp.setVelocity(-RAMP.RPM);
+        feeder.setPower(-1);
     }
 
     public void stop() {
         collector.stopMotor();
-//        feeder.stopMotor();
+        ramp.stopMotor();
+        feeder.setPower(0);
     }
 
     @Override
     public void periodic() {
         telemetry.addData("Collector RPM", Math.abs(toRPM(collector.getCorrectedVelocity())));
         telemetry.addData("Target collector RPM", COLLECTOR.RPM);
-//        telemetry.addData("Feeder RPM", toRPM(feeder.getCorrectedVelocity()));
+        telemetry.addData("Ramp RPM", Math.abs(toRPM(ramp.getCorrectedVelocity())));
+        telemetry.addData("Target ramp RPM", RAMP.RPM);
     }
 }
