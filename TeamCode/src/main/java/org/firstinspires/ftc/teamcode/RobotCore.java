@@ -61,17 +61,20 @@ public class RobotCore extends Robot {
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        telemetry.addData("Status", "Initializing Hardware");
+        telemetry.update();
         robotMap = RobotMap.getInstance();
         robotMap.init(hardwareMap);
 
+        telemetry.addData("Status", "Initializing AprilTags");
+        telemetry.update();
         atVision = new ATVision();
-        objectDetection = new ObjectDetection(Global.liveView);
+
+        telemetry.addData("Status", "Initializing Object Detection");
+        telemetry.update();
+        objectDetection = new ObjectDetection(this, Global.liveView);
 
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
-        while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Status", "Initializing AprilTags");
-            telemetry.update();
-        }
 
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);

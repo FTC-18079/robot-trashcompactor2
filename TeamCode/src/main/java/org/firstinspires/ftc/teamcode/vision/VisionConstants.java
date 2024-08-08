@@ -1,13 +1,24 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
+import org.opencv.core.Scalar;
 
+@Config
 public class VisionConstants {
+    // Lower and higher bounds for blue HSV
+    public static Scalar lowBlueHSV = new Scalar(100, 160, 60);
+    public static Scalar highBlueHSV = new Scalar(130, 255, 255);
+
+    // Lower and higher bounds for red HSV
+    public static Scalar lowRedHSV = new Scalar(0, 150, 0);
+    public static Scalar highRedHSV = new Scalar(11, 255, 255);
+
     // Kalman coefficients
     public static double Q = 0.1;
     public static double R = 0.4;

@@ -33,10 +33,6 @@ public class RedForwardAuto extends LinearOpMode {
             config();
         }
 
-        // Init vision
-        telemetry.addData("Status", "Configuring object detection");
-        telemetry.update();
-
         // Init robot
         Pose2d initialPose = new Pose2d(startingX, startingY, startingH);
         RobotCore robot = new RobotCore(
