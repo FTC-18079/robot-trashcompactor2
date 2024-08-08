@@ -44,13 +44,13 @@ public class Intake extends SubsystemBase {
 
     public void in() {
         collector.setVelocity(toTicksPerSec(-COLLECTOR.RPM));
-        ramp.setVelocity(RAMP.RPM);
+        ramp.setVelocity(toTicksPerSec(RAMP.RPM));
         feeder.setPower(1);
     }
 
     public void eject() {
         collector.setVelocity(toTicksPerSec(COLLECTOR.RPM));
-        ramp.setVelocity(-RAMP.RPM);
+        ramp.setVelocity(toTicksPerSec(-RAMP.RPM));
         feeder.setPower(-1);
     }
 
@@ -63,8 +63,6 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         telemetry.addData("Collector RPM", Math.abs(toRPM(collector.getCorrectedVelocity())));
-        telemetry.addData("Target collector RPM", COLLECTOR.RPM);
         telemetry.addData("Ramp RPM", Math.abs(toRPM(ramp.getCorrectedVelocity())));
-        telemetry.addData("Target ramp RPM", RAMP.RPM);
     }
 }
