@@ -53,10 +53,10 @@ public class RobotMap {
         CAMERA_AT = hardwareMap.get(WebcamName.class, "arducam");
         CAMERA_OBJECT = hardwareMap.get(WebcamName.class, "object");
 
-        MOTOR_FL = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        MOTOR_BL = hardwareMap.get(DcMotorEx.class, "backLeft");
-        MOTOR_FR = hardwareMap.get(DcMotorEx.class, "frontRight");
-        MOTOR_BR = hardwareMap.get(DcMotorEx.class, "backRight");
+        MOTOR_FL = hardwareMap.get(DcMotorEx.class, "leftFront");
+        MOTOR_BL = hardwareMap.get(DcMotorEx.class, "leftRear");
+        MOTOR_FR = hardwareMap.get(DcMotorEx.class, "rightFront");
+        MOTOR_BR = hardwareMap.get(DcMotorEx.class, "rightRear");
 
         PAR0 = hardwareMap.get(DcMotorEx.class, "frontLeft");
         PAR1 = hardwareMap.get(DcMotorEx.class, "backRight");
