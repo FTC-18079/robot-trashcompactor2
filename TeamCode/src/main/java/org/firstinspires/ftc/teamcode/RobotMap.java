@@ -37,6 +37,7 @@ public class RobotMap {
     public MotorEx PIVOT;
     public MotorEx SHOOTER;
     public Servo FLICK;
+    public Servo SEAL;
 
     private static RobotMap instance = null;
 
@@ -70,6 +71,7 @@ public class RobotMap {
         PIVOT = new MotorEx(hardwareMap, "pivot");
         SHOOTER = new MotorEx(hardwareMap, "shooter");
         FLICK = hardwareMap.get(Servo.class, "flick");
+        SEAL = hardwareMap.get(Servo.class, "seal");
 
         this.hMap = hardwareMap;
     }

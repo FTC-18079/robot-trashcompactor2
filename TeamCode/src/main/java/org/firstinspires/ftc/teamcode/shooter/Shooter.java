@@ -24,6 +24,7 @@ public class Shooter extends SubsystemBase {
 
     boolean inShootingMode;
     int pivotAngle;
+    double shooterVelocity;
 
     public Shooter(RobotCore robot) {
         this.telemetry = robot.getTelemetry();
@@ -34,6 +35,7 @@ public class Shooter extends SubsystemBase {
         pivot = RobotMap.getInstance().PIVOT;
         shooter = RobotMap.getInstance().SHOOTER;
         flick = RobotMap.getInstance().FLICK;
+        seal = RobotMap.getInstance().SEAL;
 
         inShootingMode = false;
         setupMotors();
@@ -64,19 +66,19 @@ public class Shooter extends SubsystemBase {
     }
 
     public void closeSeal() {
-
+        seal.setPosition(1);
     }
 
     public void openSeal() {
-
+        seal.setPosition(0);
     }
 
     public void readyShooter() {
-         shooter.setVelocity(toTicksPerSec(LAUNCHER.RPM, (int) shooter.getCPR()));
+        shooterVelocity = toTicksPerSec(LAUNCHER.RPM, (int) shooter.getCPR());
     }
 
     public void stopShooter() {
-        shooter.stopMotor();
+        shooterVelocity = 0.0;
     }
 
     public boolean isReadyToFire() {
@@ -122,6 +124,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         if (inShootingMode) pivotAngle = calculatePivotAngle();
 
+        shooter.setVelocity(shooterVelocity);
         aimPivot(pivotAngle);
         pivot.set(PIVOT.RPM);
 
