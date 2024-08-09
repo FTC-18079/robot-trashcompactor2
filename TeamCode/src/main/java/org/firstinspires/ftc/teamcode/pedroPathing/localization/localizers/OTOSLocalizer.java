@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Localizer;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
@@ -35,7 +36,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
  * @version 1.0, 7/20/2024
  */
 public class OTOSLocalizer extends Localizer {
-    private HardwareMap hardwareMap;
     private Pose startPose;
     private SparkFunOTOS otos;
     private double previousHeading;
@@ -44,25 +44,19 @@ public class OTOSLocalizer extends Localizer {
     /**
      * This creates a new OTOSLocalizer from a HardwareMap, with a starting Pose at (0,0)
      * facing 0 heading.
-     *
-     * @param map the HardwareMap
      */
-    public OTOSLocalizer(HardwareMap map) {
-        this(map, new Pose());
+    public OTOSLocalizer() {
+        this(new Pose());
     }
 
     /**
      * This creates a new OTOSLocalizer from a HardwareMap and a Pose, with the Pose
      * specifying the starting pose of the localizer.
      *
-     * @param map the HardwareMap
      * @param setStartPose the Pose to start from
      */
-    public OTOSLocalizer(HardwareMap map, Pose setStartPose) {
-        hardwareMap = map;
-
-        // TODO: replace this with your OTOS port
-        otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+    public OTOSLocalizer(Pose setStartPose) {
+        otos = RobotMap.getInstance().OTOS;
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);
