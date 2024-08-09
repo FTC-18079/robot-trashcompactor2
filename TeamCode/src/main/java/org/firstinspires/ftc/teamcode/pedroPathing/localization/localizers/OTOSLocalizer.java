@@ -45,8 +45,8 @@ public class OTOSLocalizer extends Localizer {
      * This creates a new OTOSLocalizer from a HardwareMap, with a starting Pose at (0,0)
      * facing 0 heading.
      */
-    public OTOSLocalizer() {
-        this(new Pose());
+    public OTOSLocalizer(HardwareMap hardwareMap) {
+        this(hardwareMap, new Pose());
     }
 
     /**
@@ -55,8 +55,10 @@ public class OTOSLocalizer extends Localizer {
      *
      * @param setStartPose the Pose to start from
      */
-    public OTOSLocalizer(Pose setStartPose) {
-        otos = RobotMap.getInstance().OTOS;
+    public OTOSLocalizer(HardwareMap hMap, Pose setStartPose) {
+        // TODO: uncomment
+        // otos = RobotMap.getInstance().OTOS;
+        otos = hMap.get(SparkFunOTOS.class, "otos");
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);

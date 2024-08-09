@@ -41,10 +41,10 @@ public class RobotMap {
         CAMERA_OBJECT = hardwareMap.get(WebcamName.class, "object");
         OTOS = hardwareMap.get(SparkFunOTOS.class, "otos");
 
-        MOTOR_FL = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        MOTOR_BL = hardwareMap.get(DcMotorEx.class, "backLeft");
-        MOTOR_FR = hardwareMap.get(DcMotorEx.class, "frontRight");
-        MOTOR_BR = hardwareMap.get(DcMotorEx.class, "backRight");
+        MOTOR_FL = hardwareMap.get(DcMotorEx.class, "leftFront");
+        MOTOR_BL = hardwareMap.get(DcMotorEx.class, "leftRear");
+        MOTOR_FR = hardwareMap.get(DcMotorEx.class, "rightFront");
+        MOTOR_BR = hardwareMap.get(DcMotorEx.class, "rightRear");
 
         COLLECTOR = new MotorEx(hardwareMap, "collector");
 //        FEEDER = new MotorEx(hardwareMap, "feeder");
