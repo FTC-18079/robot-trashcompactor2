@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.shooter;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -11,8 +13,14 @@ import static org.firstinspires.ftc.teamcode.shooter.ShooterConstants.*;
 
 public class Shooter extends SubsystemBase {
     Telemetry telemetry;
+    // Plate servos
     Servo plateLeft;
     Servo plateRight;
+    // Cannon
+    MotorEx pivot;
+    MotorEx shooter;
+    Servo flick;
+
     boolean inShootingMode;
     double pivotAngle;
 
@@ -21,10 +29,35 @@ public class Shooter extends SubsystemBase {
 
         plateLeft = RobotMap.getInstance().PLATE_LEFT;
         plateRight = RobotMap.getInstance().PLATE_RIGHT;
+
+        pivot = RobotMap.getInstance().PIVOT;
+        shooter = RobotMap.getInstance().SHOOTER;
+        flick = RobotMap.getInstance().FLICK;
+
+        setupMotors();
+    }
+
+    public void setupMotors() {
+        pivot.stopAndResetEncoder();
+        pivot.setInverted(false);
+        pivot.setPositionCoefficient(PIVOT.kP);
+        pivot.setRunMode(Motor.RunMode.PositionControl);
+        pivot.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        shooter.stopAndResetEncoder();
+        shooter.setInverted(false);
+        shooter.setVeloCoefficients(LAUNCHER.kP, LAUNCHER.kI, LAUNCHER.kD);
+        shooter.setFeedforwardCoefficients(LAUNCHER.kS, LAUNCHER.kV, LAUNCHER.kA);
+        shooter.setRunMode(Motor.RunMode.VelocityControl);
+        shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     public void shoot() {
-        // fire.setPosition(1)
+        flick.setPosition(1);
+    }
+
+    public void flickBack() {
+        flick.setPosition(0);
     }
 
     public void closeSeal() {
