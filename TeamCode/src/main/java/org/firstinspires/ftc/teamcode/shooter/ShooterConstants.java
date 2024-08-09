@@ -27,6 +27,7 @@ public class ShooterConstants {
     }
 
     public static class Pivot {
+        public double RPM = 0.0;
         public double POSITION_TOLERANCE = 0.0;
         // PID
         public double kP = 1.0;

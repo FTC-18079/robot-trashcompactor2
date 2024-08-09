@@ -20,9 +20,10 @@ public class Shooter extends SubsystemBase {
     MotorEx pivot;
     MotorEx shooter;
     Servo flick;
+    Servo seal;
 
     boolean inShootingMode;
-    double pivotAngle;
+    int pivotAngle;
 
     public Shooter(RobotCore robot) {
         this.telemetry = robot.getTelemetry();
@@ -34,6 +35,7 @@ public class Shooter extends SubsystemBase {
         shooter = RobotMap.getInstance().SHOOTER;
         flick = RobotMap.getInstance().FLICK;
 
+        inShootingMode = false;
         setupMotors();
     }
 
@@ -41,6 +43,7 @@ public class Shooter extends SubsystemBase {
         pivot.stopAndResetEncoder();
         pivot.setInverted(false);
         pivot.setPositionCoefficient(PIVOT.kP);
+        pivot.setPositionTolerance(PIVOT.POSITION_TOLERANCE);
         pivot.setRunMode(Motor.RunMode.PositionControl);
         pivot.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
@@ -69,21 +72,20 @@ public class Shooter extends SubsystemBase {
     }
 
     public void readyShooter() {
-        // shooter.setVelocity
+         shooter.setVelocity(toTicksPerSec(LAUNCHER.RPM, (int) shooter.getCPR()));
     }
 
     public void stopShooter() {
-        // shooter.stop()
+        shooter.stopMotor();
     }
 
-    public boolean isReady() {
-        // return shooter.atTargetVelocity() && pivot.atTargetAngle()
-        return true;
+    public boolean isReadyToFire() {
+        double velocity = shooter.getCorrectedVelocity();
+        return Math.abs(LAUNCHER.RPM - velocity) < LAUNCHER.VELOCITY_TOLERANCE && pivotReady();
     }
 
     public boolean pivotReady() {
-        // return pivot.atTargetAngle()
-        return true;
+        return pivot.atTargetPosition();
     }
 
     public void toggleShootingMode() {
@@ -100,24 +102,28 @@ public class Shooter extends SubsystemBase {
         plateRight.setPosition(PLATE.RIGHT_PLATE_STOW);
     }
 
-    public void aimPivot(double angle) {
-        // pivot.setTargetPosition(targetAngle)
+    public void aimPivot(int angle) {
+         pivot.setTargetPosition(angle);
     }
 
     public void pivotDown() {
-        pivotAngle = 0.0;
+        pivotAngle = 0;
     }
 
     public boolean isInShootingMode() {
         return inShootingMode;
     }
 
+    public int calculatePivotAngle() {
+        return 0;
+    }
+
     @Override
     public void periodic() {
+        if (inShootingMode) pivotAngle = calculatePivotAngle();
+
         aimPivot(pivotAngle);
-        if (inShootingMode) {
-            // pivotAngle = calculatePivotAngle
-        }
+        pivot.set(PIVOT.RPM);
 
         telemetry.addData("In Shooting Mode", inShootingMode);
     }
