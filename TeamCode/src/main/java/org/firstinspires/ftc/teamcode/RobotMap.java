@@ -33,7 +33,10 @@ public class RobotMap {
     // Plate movers
     public Servo PLATE_LEFT;
     public Servo PLATE_RIGHT;
-//    public Servo PLATE_REAR;
+    // Shooter
+    public MotorEx PIVOT;
+    public MotorEx SHOOTER;
+    public Servo FLICK;
 
     private static RobotMap instance = null;
 
@@ -62,8 +65,11 @@ public class RobotMap {
 //        FEEDER = new MotorEx(hardwareMap, "feeder");
 
         PLATE_RIGHT = hardwareMap.get(Servo.class, "plateRight");
-//        PLATE_REAR = hardwareMap.get(Servo.class, "plateRear");   we only have two plates now lol
         PLATE_LEFT = hardwareMap.get(Servo.class, "plateLeft");
+
+        PIVOT = new MotorEx(hardwareMap, "pivot");
+        SHOOTER = new MotorEx(hardwareMap, "shooter");
+        FLICK = hardwareMap.get(Servo.class, "flick");
 
         this.hMap = hardwareMap;
     }
