@@ -47,7 +47,7 @@ public class PoseUpdater {
     private long currentPoseTime;
 
     /**
-     * Creates a new PoseUpdater from a HardwareMap and a Localizer.
+     * Creates a new PoseUpdater from a Localizer.
      * @param localizer the Localizer
      */
     public PoseUpdater(Localizer localizer) {

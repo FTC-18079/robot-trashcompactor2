@@ -30,6 +30,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.RobotMap;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.PoseUpdater;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.localizers.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierPoint;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
@@ -144,8 +145,8 @@ public class Follower {
     /**
      * This creates a new Follower.
      */
-    public Follower() {
-        initialize();
+    public Follower(Pose initialPose) {
+        initialize(initialPose);
     }
 
     /**
@@ -154,9 +155,9 @@ public class Follower {
      * initialized and their behavior is set, and the variables involved in approximating first and
      * second derivatives for teleop are set.
      */
-    public void initialize() {
+    public void initialize(Pose initialPose) {
         driveVectorScaler = new DriveVectorScaler(FollowerConstants.frontLeftVector);
-        poseUpdater = new PoseUpdater();
+        poseUpdater = new PoseUpdater(new OTOSLocalizer(initialPose));
 
         leftFront = RobotMap.getInstance().MOTOR_FL;
         leftRear = RobotMap.getInstance().MOTOR_BL;

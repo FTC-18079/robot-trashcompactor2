@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Field2d {
 
     public Field2d() {
         FieldObject2d obj = new FieldObject2d("Robot");
-        obj.setPose(new Pose2d(0, 0, new Rotation2d(0)));
+        obj.setPose(new Pose(0, 0, 0));
         objects.add(obj);
     }
 
@@ -36,7 +35,7 @@ public class Field2d {
      *
      * @param pose 2D pose
      */
-    public synchronized void setRobotPose(Pose2d pose) {
+    public synchronized void setRobotPose(Pose pose) {
         objects.get(0).setPose(pose);
     }
 
@@ -47,7 +46,7 @@ public class Field2d {
      * @param yMeters Y location, in meters
      * @param rotation rotation
      */
-    public synchronized void setRobotPose(double xMeters, double yMeters, Rotation2d rotation) {
+    public synchronized void setRobotPose(double xMeters, double yMeters, double rotation) {
         objects.get(0).setPose(xMeters, yMeters, rotation);
     }
 
@@ -56,7 +55,7 @@ public class Field2d {
      *
      * @return 2D pose
      */
-    public synchronized Pose2d getRobotPose() {
+    public synchronized Pose getRobotPose() {
         return objects.get(0).getPose();
     }
 

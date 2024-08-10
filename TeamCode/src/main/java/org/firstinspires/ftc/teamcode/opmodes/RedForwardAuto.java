@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RobotCore;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 
@@ -35,7 +34,7 @@ public class RedForwardAuto extends LinearOpMode {
         }
 
         // Init robot
-        Pose2d initialPose = new Pose2d(startingX, startingY, new Rotation2d(startingH));
+        Pose initialPose = new Pose(startingX, startingY, startingH);
         RobotCore robot = new RobotCore(
                 RobotCore.OpModeType.RED_FORWARD,
                 hardwareMap,

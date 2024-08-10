@@ -6,19 +6,16 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
-
-import java.lang.Math;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 
 public class Chassis extends SubsystemBase {
     Telemetry telemetry;
     Follower drive;
-//    MecanumDrive drive;
     boolean isFieldCentric;
-    public Chassis(RobotCore robot, Pose2d initialPose) {
+    public Chassis(RobotCore robot, Pose initialPose) {
         this.telemetry = robot.getTelemetry();
         isFieldCentric = true;
-        drive = new Follower();
-//        drive = new ATDrive(initialPose, robot.getAprilTag());
+        drive = new Follower(initialPose);
     }
 
     /**
@@ -48,12 +45,8 @@ public class Chassis extends SubsystemBase {
 //        this.drive.setDrivePowers(velocity);
     }
 
-//    public void updatePoseEstimate() {
-//        drive.updatePoseEstimate();
-//    }
-
-    public Pose2d getPoseEstimate() {
-        return new Pose2d();
+    public Pose getPoseEstimate() {
+        return drive.getPose();
     }
 
     public boolean isFieldCentric() {
@@ -74,7 +67,7 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-//        updatePoseEstimate();
+        drive.update();
         telemetry.addData("Field centric", isFieldCentric);
 //        telemetry.addData("Pose estimate", drive.pose.toString());
     }
