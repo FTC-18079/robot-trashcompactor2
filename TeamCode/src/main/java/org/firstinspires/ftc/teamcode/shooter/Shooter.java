@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
 
     public void setupMotors() {
         pivot.stopAndResetEncoder();
-        pivot.setInverted(false);
+        pivot.setInverted(true);
         pivot.setPositionCoefficient(PIVOT.kP);
         pivot.setPositionTolerance(PIVOT.POSITION_TOLERANCE);
         pivot.setRunMode(Motor.RunMode.PositionControl);
@@ -115,8 +115,9 @@ public class Shooter extends SubsystemBase {
          pivot.setTargetPosition(angle);
     }
 
-    public void pivotDown() {
-        pivotAngle = 0;
+    public void setPivot() {
+        if (pivotReady()) pivot.set(0);
+        else pivot.set(toTicksPerSec(PIVOT.RPM, pivot.getCPR()));
     }
 
     public boolean isInShootingMode() {
@@ -125,19 +126,19 @@ public class Shooter extends SubsystemBase {
 
     // TODO: calc the pivot angle formula
     public int calculatePivotAngle() {
-        return PIVOT_ANGLE;
+        return (int) angleToTicks(PIVOT_ANGLE, pivot.getCPR());
     }
 
     @Override
     public void periodic() {
         if (inShootingMode) pivotAngle = calculatePivotAngle();
+        else pivotAngle = 0;
 
         shooter.setVelocity(shooterVelocity);
         aimPivot(pivotAngle);
-        pivot.set(toTicksPerSec(PIVOT.RPM, pivot.getCPR()));
+        setPivot();
 
         telemetry.addData("In Shooting Mode", inShootingMode);
-        telemetry.addData("Pivot ticks", pivot.getCPR());
 
         // TODO: remove this, it's debug
         telemetry.addData("Target shooter RPM", LAUNCHER.RPM);

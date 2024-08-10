@@ -28,7 +28,7 @@ public class ShooterConstants {
 
     public static class Pivot {
         public double RPM = -60.0;
-        public double POSITION_TOLERANCE = 50.0;
+        public double POSITION_TOLERANCE = 8.0;
         // PID
         public double kP = 1.0;
         public double kI = 0.0;
@@ -45,5 +45,13 @@ public class ShooterConstants {
 
     public static double toRPM(double tps, double motorTicks) {
         return (tps / motorTicks) * 60.0;
+    }
+
+    public static double angleToTicks(double degrees, double cpr) {
+        return (degrees / 360.0) * cpr;
+    }
+
+    public static double ticksToAngle(double ticks, double cpr) {
+        return (ticks / cpr) * 360.0;
     }
 }
