@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.shooter;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+
 @Config
 public class ShooterConstants {
     public static class Plate {
@@ -27,17 +29,21 @@ public class ShooterConstants {
     }
 
     public static class Pivot {
-        public double RPM = -60.0;
+        public double RPM = -40.0;
         public double POSITION_TOLERANCE = 8.0;
+        public int MAX_ANGLE = 0;
         // PID
         public double kP = 1.0;
         public double kI = 0.0;
         public double kD = 0.0;
     }
+    public static double GOAL_X = -72.0;
+    public static double GOAL_Y = 48.0;
 
     public static Plate PLATE = new Plate();
     public static Launcher LAUNCHER = new Launcher();
     public static Pivot PIVOT = new Pivot();
+    public static Pose GOAL_POSE = new Pose(GOAL_X, GOAL_Y);
 
     public static double toTicksPerSec(double rpm, double motorTicks) {
         return (rpm / 60) * motorTicks;

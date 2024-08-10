@@ -9,11 +9,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.RobotMap;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 
 import static org.firstinspires.ftc.teamcode.shooter.ShooterConstants.*;
 
 @Config
 public class Shooter extends SubsystemBase {
+    RobotCore robot;
     Telemetry telemetry;
     // Plate servos
     Servo plateLeft;
@@ -32,6 +35,7 @@ public class Shooter extends SubsystemBase {
     public static int PIVOT_ANGLE = 0;
 
     public Shooter(RobotCore robot) {
+        this.robot = robot;
         this.telemetry = robot.getTelemetry();
 
         plateLeft = RobotMap.getInstance().PLATE_LEFT;
@@ -125,13 +129,19 @@ public class Shooter extends SubsystemBase {
     }
 
     // TODO: calc the pivot angle formula
+    // pivot will work off motor ticks rather than angle (for now)
     public int calculatePivotAngle() {
-        return (int) angleToTicks(PIVOT_ANGLE, pivot.getCPR());
+        // Calculate distance to goal
+        Pose pose = robot.getPoseEstimate();
+        double dist = MathFunctions.distance(pose, GOAL_POSE);
+
+        return (int) PIVOT_ANGLE;
     }
 
     @Override
     public void periodic() {
-        if (inShootingMode) pivotAngle = calculatePivotAngle();
+        // The lower and upper bounds may need to swap if pivot is reversed
+        if (inShootingMode) pivotAngle = (int) MathFunctions.clamp(calculatePivotAngle(), 0, PIVOT.MAX_ANGLE);
         else pivotAngle = 0;
 
         shooter.setVelocity(shooterVelocity);
