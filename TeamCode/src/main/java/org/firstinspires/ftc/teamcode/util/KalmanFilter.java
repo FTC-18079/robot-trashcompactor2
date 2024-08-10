@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Twist2d;
-import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.arcrobotics.ftclib.geometry.Twist2d;
 
 // https://github.com/jdhs-ftc/2023/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/helpers/control/KalmanFilter.java
 public class KalmanFilter {
@@ -85,10 +85,10 @@ public class KalmanFilter {
          * NOTE: MODEL IS THE *CHANGE* SINCE LAST UPDATE
          */
         public Vector2d update(Twist2d model, Pose2d sensor) {
-            Pose2d modelPose = Pose2d.exp(model);
+            Pose2d modelPose = new Pose2d().exp(model);
             return new Vector2d(
-                    x.update(modelPose.position.x, sensor.position.x),
-                    y.update(modelPose.position.y, sensor.position.y)
+                    x.update(modelPose.getX(), sensor.getX()),
+                    y.update(modelPose.getY(), sensor.getY())
             );
         }
 
@@ -98,8 +98,8 @@ public class KalmanFilter {
          */
         public Vector2d update(Twist2d model, Vector2d sensor) {
             return new Vector2d(
-                    x.update(model.line.x, sensor.x),
-                    y.update(model.line.y, sensor.y));
+                    x.update(model.dx, sensor.getX()),
+                    y.update(model.dy, sensor.getY()));
         }
     }
 }

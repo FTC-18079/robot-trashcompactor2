@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Rotation2d;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Field2d {
 
     public Field2d() {
         FieldObject2d obj = new FieldObject2d("Robot");
-        obj.setPose(new Pose2d(0, 0, 0));
+        obj.setPose(new Pose2d(0, 0, new Rotation2d(0)));
         objects.add(obj);
     }
 

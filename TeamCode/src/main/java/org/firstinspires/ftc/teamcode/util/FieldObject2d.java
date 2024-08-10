@@ -2,8 +2,8 @@
 
 package org.firstinspires.ftc.teamcode.util;
 
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Rotation2d;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.trajectory.Trajectory;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class FieldObject2d {
      * @param rotation rotation
      */
     public synchronized void setPose(double xMeters, double yMeters, Rotation2d rotation) {
-        setPose(new Pose2d(xMeters, yMeters, rotation.toDouble()));
+        setPose(new Pose2d(xMeters, yMeters, rotation));
     }
 
     /**
@@ -50,7 +50,7 @@ public class FieldObject2d {
      */
     public synchronized Pose2d getPose() {
         if (this.poses.isEmpty()) {
-            return new Pose2d(0, 0, 0);
+            return new Pose2d(0, 0, new Rotation2d(0));
         }
         return this.poses.get(0);
     }
@@ -86,7 +86,7 @@ public class FieldObject2d {
             poses.add(new Pose2d(
                     state.poseMeters.getX(),
                     state.poseMeters.getY(),
-                    state.poseMeters.getHeading()
+                    new Rotation2d(state.poseMeters.getHeading())
             ));
         }
     }

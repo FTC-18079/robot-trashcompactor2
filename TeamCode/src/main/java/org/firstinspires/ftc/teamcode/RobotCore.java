@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -11,6 +10,7 @@ import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,7 +29,6 @@ import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
 import org.firstinspires.ftc.teamcode.vision.ObjectDetection;
-import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.Math;
 
@@ -69,22 +68,25 @@ public class RobotCore extends Robot {
     public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        telemetry.addData("Status", "Initializing Hardware");
+        telemetry.update();
         robotMap = RobotMap.getInstance();
         robotMap.init(hardwareMap);
 
+        telemetry.addData("Status", "Initializing AprilTags");
+        telemetry.update();
         atVision = new ATVision();
-        objectDetection = new ObjectDetection(Global.liveView);
+
+        telemetry.addData("Status", "Initializing Object Detection");
+        telemetry.update();
+        objectDetection = new ObjectDetection(this, Global.liveView);
 
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
-        while (atVision.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Status", "Initializing AprilTags");
-            telemetry.update();
-        }
 
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
-        this.initialPose = initialPose;
+//        this.initialPose = initialPose;
         Global.field.setRobotPose(initialPose);
 
         // Initialize subsystems
