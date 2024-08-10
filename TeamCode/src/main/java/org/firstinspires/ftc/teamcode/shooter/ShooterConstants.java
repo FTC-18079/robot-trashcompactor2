@@ -15,7 +15,7 @@ public class ShooterConstants {
 
     public static class Launcher {
         public double RPM = -200.0;
-        public double VELOCITY_TOLERANCE = 0.0;
+        public double VELOCITY_TOLERANCE = 30.0;
         // PID
         public double kP = 1.0;
         public double kI = 0.0;

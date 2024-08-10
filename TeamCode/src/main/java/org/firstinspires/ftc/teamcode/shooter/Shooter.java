@@ -44,6 +44,8 @@ public class Shooter extends SubsystemBase {
         seal = RobotMap.getInstance().SEAL;
 
         inShootingMode = false;
+        pivotAngle = 0;
+        shooterVelocity = 0.0;
         setupMotors();
     }
 
@@ -64,11 +66,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        flick.setPosition(0.65);
+        flick.setPosition(0.2);
     }
 
     public void flickBack() {
-        flick.setPosition(0.35);
+        flick.setPosition(0);
     }
 
     public void closeSeal() {
@@ -89,13 +91,11 @@ public class Shooter extends SubsystemBase {
 
     public boolean isReadyToFire() {
         double velocity = toRPM(shooter.getCorrectedVelocity(), (int) shooter.getCPR());
-        return false;
-        //return Math.abs(LAUNCHER.RPM - velocity) < LAUNCHER.VELOCITY_TOLERANCE && pivotReady();
+        return Math.abs(LAUNCHER.RPM - velocity) < LAUNCHER.VELOCITY_TOLERANCE && pivotReady();
     }
 
     public boolean pivotReady() {
-        return true;
-        //return pivot.atTargetPosition();
+        return pivot.atTargetPosition();
     }
 
     public void toggleShootingMode() {
@@ -124,6 +124,7 @@ public class Shooter extends SubsystemBase {
         return inShootingMode;
     }
 
+    // TODO: calc the pivot angle formula
     public int calculatePivotAngle() {
         return 0;
     }
