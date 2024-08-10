@@ -16,22 +16,22 @@ public class ShooterConstants {
     }
 
     public static class Launcher {
-        public double RPM = -315.0;
-        public double VELOCITY_TOLERANCE = 10.0;
+        public double RPM = -6000.0;
+        public double VELOCITY_TOLERANCE = 25.0;
         // PID
         public double kP = 1.0;
         public double kI = 0.0;
         public double kD = 0.0;
         // FeedForward
         public double kS = 0.0;
-        public double kV = 1.0;
+        public double kV = 1.3;
         public double kA = 0.0;
     }
 
     public static class Pivot {
         public double RPM = 0.5;
         public double POSITION_TOLERANCE = 15.0;
-        public int MAX_ANGLE = -650;
+        public int MAX_ANGLE = -550;
         // PID
         public double kP = 0.0005;
         public double kI = 0.0;

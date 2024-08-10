@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        flick.setPosition(0.2);
+        flick.setPosition(0.3);
     }
 
     public void flickBack() {
@@ -151,7 +151,7 @@ public class Shooter extends SubsystemBase {
         telemetry.addData("In Shooting Mode", inShootingMode);
 
         // TODO: remove this, it's debug
-        telemetry.addData("Target shooter RPM", LAUNCHER.RPM);
+        telemetry.addData("Target shooter RPM", toRPM(shooterVelocity, shooter.getCPR()));
         telemetry.addData("Shooter RPM", toRPM(shooter.getCorrectedVelocity(), shooter.getCPR()));
         telemetry.addData("Shooter TPS", shooter.getCorrectedVelocity());
 

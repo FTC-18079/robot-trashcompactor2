@@ -69,7 +69,7 @@ public class RobotMap {
         PLATE_LEFT = hardwareMap.get(Servo.class, "plateLeft");
 
         PIVOT = new MotorEx(hardwareMap, "pivot");
-        SHOOTER = new MotorEx(hardwareMap, "shooter", 146.44, 1147.23);
+        SHOOTER = new MotorEx(hardwareMap, "shooter", 28.0, 6000.0);
         FLICK = hardwareMap.get(Servo.class, "flick");
         SEAL = hardwareMap.get(Servo.class, "seal");
 

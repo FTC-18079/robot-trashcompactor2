@@ -16,9 +16,9 @@ public class ShootingModeToggleCommand extends SequentialCommandGroup {
                 new ConditionalCommand(
                         // Disable shooting mode
                         new SequentialCommandGroup(
+                                new InstantCommand(shooter::toggleShootingMode),     // bring pivot down
                                 new InstantCommand(shooter::stopShooter),   // stop the shooter
                                 new InstantCommand(shooter::openSeal),      // open ring seal
-                                new InstantCommand(shooter::toggleShootingMode),     // bring pivot down
                                 new WaitUntilCommand(shooter::pivotReady),  // wait until pivot is at zero
                                 new InstantCommand(shooter::plateStow)      // retract plate
                         ),
