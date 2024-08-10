@@ -141,9 +141,8 @@ public class RobotCore extends Robot {
                 .whenActive(intake::eject)
                 .whenInactive(intake::stop);
 
-        // TODO: Delete this
-        driveController.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(intake::setupMotors);
+//        driveController.getGamepadButton(GamepadKeys.Button.A)
+//                .whenPressed(intake::setupMotors);
 
         // Set default commands
         chassis.setDefaultCommand(driveCommand);

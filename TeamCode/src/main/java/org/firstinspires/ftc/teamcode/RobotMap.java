@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -24,7 +25,8 @@ public class RobotMap {
 
     // Intake
     public MotorEx COLLECTOR;
-    public MotorEx FEEDER;
+    public MotorEx RAMP;
+    public CRServo FEEDER;
 
     private static RobotMap instance = null;
 
@@ -47,7 +49,8 @@ public class RobotMap {
         MOTOR_BR = hardwareMap.get(DcMotorEx.class, "rightRear");
 
         COLLECTOR = new MotorEx(hardwareMap, "collector");
-//        FEEDER = new MotorEx(hardwareMap, "feeder");
+        RAMP = new MotorEx(hardwareMap, "ramp");
+        FEEDER = hardwareMap.get(CRServo.class, "feeder");
 
         this.hMap = hardwareMap;
     }
