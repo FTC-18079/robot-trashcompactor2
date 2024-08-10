@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -19,6 +21,9 @@ import org.firstinspires.ftc.teamcode.auto.RedForwardSequence;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.intake.Intake;
+import org.firstinspires.ftc.teamcode.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.shooter.commands.ShootCommand;
+import org.firstinspires.ftc.teamcode.shooter.commands.ShootingModeToggleCommand;
 import org.firstinspires.ftc.teamcode.util.Global;
 import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
@@ -39,9 +44,11 @@ public class RobotCore extends Robot {
     // Subsystems
     Chassis chassis;
     Intake intake;
+    Shooter shooter;
     // Commands
     TeleOpDriveCommand driveCommand;
-    SelectCommand intakeCommand;
+    ShootingModeToggleCommand shootingModeToggleCommand;
+    ShootCommand shootCommand;
     // Drive
     private static final double DRIVE_SENSITIVITY = 1.1;
     private static final double ROTATIONAL_SENSITIVITY = 2.0;
@@ -53,6 +60,7 @@ public class RobotCore extends Robot {
     private double endTime = 0;
     // OpMode type enumerator
     AutoPath autoPath;
+
     public enum OpModeType {
         TELEOP, RED_FORWARD, BLUE_FORWARD
     }
@@ -95,9 +103,11 @@ public class RobotCore extends Robot {
         this.telemetry.update();
         chassis = new Chassis(this, initialPose);
         intake = new Intake(this);
+        shooter = new Shooter(this);
 
         register(chassis);
         register(intake);
+        register(shooter);
     }
 
     private void setupOpMode(OpModeType type) {
@@ -128,21 +138,38 @@ public class RobotCore extends Robot {
 
         // Toggle field centric
         driveController.getGamepadButton(GamepadKeys.Button.X)
-                        .whenPressed(chassis::toggleFieldCentric);
+                .whenPressed(chassis::toggleFieldCentric);
         // Reset robot heading
         driveController.getGamepadButton(GamepadKeys.Button.Y)
-                        .whenPressed(chassis::resetHeading);
+                .whenPressed(chassis::resetHeading);
 
-        // Intake controls
+        // Intake & shoot controls
         new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_DEADZONE)
-                .whenActive(intake::in)
+                .whenActive(new ConditionalCommand(
+                        // If in shooting mode, fire
+                        new ShootCommand(shooter),
+                        // If not in shooting mode, intake
+                        new InstantCommand(intake::in),
+                        shooter::isInShootingMode
+                ))
                 .whenInactive(intake::stop);
         new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_DEADZONE)
-                .whenActive(intake::eject)
+                .whenActive(new ConditionalCommand(
+                        // If in shooting mode, do nothing
+                        new InstantCommand(),
+                        // If not in shooting mode, eject
+                        new InstantCommand(intake::eject),
+                        shooter::isInShootingMode
+                ))
                 .whenInactive(intake::stop);
 
-//        driveController.getGamepadButton(GamepadKeys.Button.A)
-//                .whenPressed(intake::setupMotors);
+        // TODO: Delete this after everything is tuned
+        driveController.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(shooter::setupMotors);
+
+        // Toggle shooting mode
+        driveController.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new ShootingModeToggleCommand(shooter));
 
         // Set default commands
         chassis.setDefaultCommand(driveCommand);
@@ -153,6 +180,7 @@ public class RobotCore extends Robot {
     }
 
     // bear metal <3
+
     /**
      * Reduces the sensitivity around the zero point to make the Robot more
      * controllable.
@@ -178,6 +206,10 @@ public class RobotCore extends Robot {
         } else {
             return 0.0;
         }
+    }
+
+    public boolean isInShootingMode() {
+        return shooter.isInShootingMode();
     }
 
     public ATVision getAprilTag() {

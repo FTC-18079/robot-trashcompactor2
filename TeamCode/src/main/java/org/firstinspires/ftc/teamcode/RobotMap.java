@@ -5,6 +5,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -27,6 +28,15 @@ public class RobotMap {
     public MotorEx COLLECTOR;
     public MotorEx RAMP;
     public CRServo FEEDER;
+
+    // Plate movers
+    public Servo PLATE_LEFT;
+    public Servo PLATE_RIGHT;
+    // Shooter
+    public MotorEx PIVOT;
+    public MotorEx SHOOTER;
+    public Servo FLICK;
+    public Servo SEAL;
 
     private static RobotMap instance = null;
 
@@ -51,6 +61,14 @@ public class RobotMap {
         COLLECTOR = new MotorEx(hardwareMap, "collector");
         RAMP = new MotorEx(hardwareMap, "ramp");
         FEEDER = hardwareMap.get(CRServo.class, "feeder");
+
+        PLATE_RIGHT = hardwareMap.get(Servo.class, "plateRight");
+        PLATE_LEFT = hardwareMap.get(Servo.class, "plateLeft");
+
+        PIVOT = new MotorEx(hardwareMap, "pivot");
+        SHOOTER = new MotorEx(hardwareMap, "shooter", 146.44, 1147.23);
+        FLICK = hardwareMap.get(Servo.class, "flick");
+        SEAL = hardwareMap.get(Servo.class, "seal");
 
         this.hMap = hardwareMap;
     }
