@@ -48,14 +48,10 @@ public class PoseUpdater {
 
     /**
      * Creates a new PoseUpdater from a HardwareMap and a Localizer.
-     *
-     * @param hardwareMap the HardwareMap
      * @param localizer the Localizer
      */
-    public PoseUpdater(HardwareMap hardwareMap, Localizer localizer) {
-        this.hardwareMap = hardwareMap;
-
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+    public PoseUpdater(Localizer localizer) {
+        for (LynxModule module : RobotMap.getInstance().getLynxModules()) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
@@ -64,11 +60,9 @@ public class PoseUpdater {
 
     /**
      * Creates a new PoseUpdater from a HardwareMap.
-     *
-     * @param hardwareMap the HardwareMap
      */
-    public PoseUpdater(HardwareMap hardwareMap) {
-        this(hardwareMap, new OTOSLocalizer(hardwareMap));
+    public PoseUpdater() {
+        this(new OTOSLocalizer());
     }
 
     /**

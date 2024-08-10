@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+import java.util.List;
 
 public class RobotMap {
     private HardwareMap hMap;
@@ -71,6 +74,10 @@ public class RobotMap {
         SEAL = hardwareMap.get(Servo.class, "seal");
 
         this.hMap = hardwareMap;
+    }
+
+    public List<LynxModule> getLynxModules() {
+        return hMap.getAll(LynxModule.class);
     }
 
     public int getMonitorId() {
