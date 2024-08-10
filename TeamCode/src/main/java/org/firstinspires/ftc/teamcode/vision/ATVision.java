@@ -4,7 +4,7 @@ import static org.firstinspires.ftc.teamcode.vision.VisionConstants.getCenterSta
 
 import android.util.Size;
 
-import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -113,8 +113,8 @@ public class ATVision {
      */
     public Vector2d calculateRobotPosition(AprilTagDetection detection, double robotHeading, Vector2d cameraOffset) {
         // Calculate robot's coordinates
-        double x = detection.ftcPose.x - cameraOffset.x;
-        double y = detection.ftcPose.y - cameraOffset.y;
+        double x = detection.ftcPose.x - cameraOffset.getX();
+        double y = detection.ftcPose.y - cameraOffset.getY();
         robotHeading = - robotHeading;
 
         // Rotate coordinates to be field-centric

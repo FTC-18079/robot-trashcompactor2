@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.util.opmode.AutoPath;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 import org.firstinspires.ftc.teamcode.vision.ATVision;
 import org.firstinspires.ftc.teamcode.vision.ObjectDetection;
-import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.Math;
 
@@ -79,7 +78,7 @@ public class RobotCore extends Robot {
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
-        this.initialPose = initialPose;
+//        this.initialPose = initialPose;
         Global.field.setRobotPose(initialPose);
 
         // Initialize subsystems
