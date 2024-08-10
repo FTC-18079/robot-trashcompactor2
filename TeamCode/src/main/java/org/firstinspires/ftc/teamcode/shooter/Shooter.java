@@ -30,7 +30,6 @@ public class Shooter extends SubsystemBase {
 
     //TODO: temporary, remove this
     public static int PIVOT_ANGLE = 0;
-    public static double SHOOTER_RPM = 0;
 
     public Shooter(RobotCore robot) {
         this.telemetry = robot.getTelemetry();
@@ -82,7 +81,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void readyShooter() {
-        shooterVelocity = toTicksPerSec(LAUNCHER.RPM, (int) shooter.getCPR());
+        shooterVelocity = toTicksPerSec(LAUNCHER.RPM, shooter.getCPR());
     }
 
     public void stopShooter() {
@@ -90,7 +89,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isReadyToFire() {
-        double velocity = toRPM(shooter.getCorrectedVelocity(), (int) shooter.getCPR());
+        double velocity = toRPM(shooter.getCorrectedVelocity(), shooter.getCPR());
         return Math.abs(LAUNCHER.RPM - velocity) < LAUNCHER.VELOCITY_TOLERANCE && pivotReady();
     }
 
@@ -126,7 +125,7 @@ public class Shooter extends SubsystemBase {
 
     // TODO: calc the pivot angle formula
     public int calculatePivotAngle() {
-        return 0;
+        return PIVOT_ANGLE;
     }
 
     @Override
@@ -135,13 +134,15 @@ public class Shooter extends SubsystemBase {
 
         shooter.setVelocity(shooterVelocity);
         aimPivot(pivotAngle);
-        pivot.set(toTicksPerSec(PIVOT.RPM, (int) pivot.getCPR()));
+        pivot.set(toTicksPerSec(PIVOT.RPM, pivot.getCPR()));
 
         telemetry.addData("In Shooting Mode", inShootingMode);
+        telemetry.addData("Pivot ticks", pivot.getCPR());
 
         // TODO: remove this, it's debug
         telemetry.addData("Target shooter RPM", LAUNCHER.RPM);
-        telemetry.addData("Shooter RPM", toRPM(shooter.getCorrectedVelocity(), (int) shooter.getCPR()));
+        telemetry.addData("Shooter RPM", toRPM(shooter.getCorrectedVelocity(), shooter.getCPR()));
+        telemetry.addData("Shooter TPS", shooter.getCorrectedVelocity());
 
         telemetry.addData("Target pivot pos", calculatePivotAngle());
         telemetry.addData("Pivot pos", pivot.getCurrentPosition());

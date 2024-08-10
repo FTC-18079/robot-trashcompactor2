@@ -14,8 +14,8 @@ public class ShooterConstants {
     }
 
     public static class Launcher {
-        public double RPM = -200.0;
-        public double VELOCITY_TOLERANCE = 30.0;
+        public double RPM = -315.0;
+        public double VELOCITY_TOLERANCE = 10.0;
         // PID
         public double kP = 1.0;
         public double kI = 0.0;
@@ -39,11 +39,11 @@ public class ShooterConstants {
     public static Launcher LAUNCHER = new Launcher();
     public static Pivot PIVOT = new Pivot();
 
-    public static double toTicksPerSec(double rpm, int motorTicks) {
-        return (rpm / 60) * (double) motorTicks;
+    public static double toTicksPerSec(double rpm, double motorTicks) {
+        return (rpm / 60) * motorTicks;
     }
 
-    public static double toRPM(double tps, int motorTicks) {
-        return (tps / (double) motorTicks) * 60.0;
+    public static double toRPM(double tps, double motorTicks) {
+        return (tps / motorTicks) * 60.0;
     }
 }
