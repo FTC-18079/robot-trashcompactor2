@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.*;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.Robot;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -59,6 +61,7 @@ public class RobotCore extends Robot {
     private double endTime = 0;
     // OpMode type enumerator
     AutoPath autoPath;
+
     public enum OpModeType {
         TELEOP, RED_FORWARD, BLUE_FORWARD
     }
@@ -133,22 +136,34 @@ public class RobotCore extends Robot {
 
         // Toggle field centric
         driveController.getGamepadButton(GamepadKeys.Button.X)
-                        .whenPressed(chassis::toggleFieldCentric);
+                .whenPressed(chassis::toggleFieldCentric);
         // Reset robot heading
         driveController.getGamepadButton(GamepadKeys.Button.Y)
-                        .whenPressed(chassis::resetHeading);
+                .whenPressed(chassis::resetHeading);
 
-        // Intake controls
+        // Intake & shoot controls
         new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > TRIGGER_DEADZONE)
-                .whenActive(intake::in)
+                .whenActive(new ConditionalCommand(
+                        // If in shooting mode, fire
+                        new ShootCommand(shooter),
+                        // If not in shooting mode, intake
+                        new InstantCommand(intake::in),
+                        shooter::isInShootingMode
+                ))
                 .whenInactive(intake::stop);
         new Trigger(() -> driveController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > TRIGGER_DEADZONE)
-                .whenActive(intake::eject)
+                .whenActive(new ConditionalCommand(
+                        // If in shooting mode, do nothing
+                        new InstantCommand(),
+                        // If not in shooting mode, eject
+                        new InstantCommand(intake::eject),
+                        shooter::isInShootingMode
+                ))
                 .whenInactive(intake::stop);
 
         // TODO: Delete this after everything is tuned
         driveController.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(intake::setupMotors);
+                .whenPressed(shooter::setupMotors);
 
         // Toggle shooting mode
         driveController.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
@@ -163,6 +178,7 @@ public class RobotCore extends Robot {
     }
 
     // bear metal <3
+
     /**
      * Reduces the sensitivity around the zero point to make the Robot more
      * controllable.

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.shooter;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.RobotMap;
 
 import static org.firstinspires.ftc.teamcode.shooter.ShooterConstants.*;
 
+@Config
 public class Shooter extends SubsystemBase {
     Telemetry telemetry;
     // Plate servos
@@ -21,10 +23,14 @@ public class Shooter extends SubsystemBase {
     MotorEx shooter;
     Servo flick;
     Servo seal;
-
+    // Fields
     boolean inShootingMode;
     int pivotAngle;
     double shooterVelocity;
+
+    //TODO: temporary, remove this
+    public static int PIVOT_ANGLE = 0;
+    public static double SHOOTER_RPM = 0;
 
     public Shooter(RobotCore robot) {
         this.telemetry = robot.getTelemetry();
@@ -58,11 +64,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        flick.setPosition(1);
+        flick.setPosition(0.65);
     }
 
     public void flickBack() {
-        flick.setPosition(0);
+        flick.setPosition(0.35);
     }
 
     public void closeSeal() {
@@ -82,12 +88,14 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isReadyToFire() {
-        double velocity = shooter.getCorrectedVelocity();
-        return Math.abs(LAUNCHER.RPM - velocity) < LAUNCHER.VELOCITY_TOLERANCE && pivotReady();
+        double velocity = toRPM(shooter.getCorrectedVelocity(), (int) shooter.getCPR());
+        return false;
+        //return Math.abs(LAUNCHER.RPM - velocity) < LAUNCHER.VELOCITY_TOLERANCE && pivotReady();
     }
 
     public boolean pivotReady() {
-        return pivot.atTargetPosition();
+        return true;
+        //return pivot.atTargetPosition();
     }
 
     public void toggleShootingMode() {
@@ -126,8 +134,15 @@ public class Shooter extends SubsystemBase {
 
         shooter.setVelocity(shooterVelocity);
         aimPivot(pivotAngle);
-        pivot.set(PIVOT.RPM);
+        pivot.set(toTicksPerSec(PIVOT.RPM, (int) pivot.getCPR()));
 
         telemetry.addData("In Shooting Mode", inShootingMode);
+
+        // TODO: remove this, it's debug
+        telemetry.addData("Target shooter RPM", LAUNCHER.RPM);
+        telemetry.addData("Shooter RPM", toRPM(shooter.getCorrectedVelocity(), (int) shooter.getCPR()));
+
+        telemetry.addData("Target pivot pos", calculatePivotAngle());
+        telemetry.addData("Pivot pos", pivot.getCurrentPosition());
     }
 }

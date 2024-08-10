@@ -27,7 +27,7 @@ public class ShootingModeToggleCommand extends SequentialCommandGroup {
                                 new InstantCommand(shooter::readyShooter),  // spin up shooter
                                 new InstantCommand(shooter::closeSeal),     // close ring seal
                                 new InstantCommand(shooter::plateOut),      // bring plate out
-                                new WaitCommand(400)                  // wait until plate is out
+                                new WaitCommand(500)                  // wait until plate is out
                         ),
                         shooter::isInShootingMode
                 ),

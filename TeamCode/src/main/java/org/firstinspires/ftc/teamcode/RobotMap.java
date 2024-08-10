@@ -58,9 +58,9 @@ public class RobotMap {
         MOTOR_FR = hardwareMap.get(DcMotorEx.class, "rightFront");
         MOTOR_BR = hardwareMap.get(DcMotorEx.class, "rightRear");
 
-        PAR0 = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        PAR1 = hardwareMap.get(DcMotorEx.class, "backRight");
-        PERP = hardwareMap.get(DcMotorEx.class, "backLeft");
+        PAR0 = hardwareMap.get(DcMotorEx.class, "leftFront");
+        PAR1 = hardwareMap.get(DcMotorEx.class, "rightRear");
+        PERP = hardwareMap.get(DcMotorEx.class, "leftRear");
 
         COLLECTOR = new MotorEx(hardwareMap, "collector");
 //        FEEDER = new MotorEx(hardwareMap, "feeder");
