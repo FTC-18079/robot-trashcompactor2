@@ -36,6 +36,7 @@ public class HardwareTest extends LinearOpMode {
 
             telemetry.addData("LB", gamepad1.left_bumper);
             telemetry.addData("RB", gamepad1.right_bumper);
+            telemetry.addData("Motor position", motor.getCurrentPosition());
             telemetry.addData("Motor power", motor.getPower());
             telemetry.addData("Motor velocity", motor.getVelocity());
             telemetry.update();

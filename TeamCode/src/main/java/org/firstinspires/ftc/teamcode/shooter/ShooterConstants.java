@@ -29,11 +29,11 @@ public class ShooterConstants {
     }
 
     public static class Pivot {
-        public double RPM = -40.0;
-        public double POSITION_TOLERANCE = 8.0;
-        public int MAX_ANGLE = 0;
+        public double RPM = 0.5;
+        public double POSITION_TOLERANCE = 15.0;
+        public int MAX_ANGLE = -650;
         // PID
-        public double kP = 1.0;
+        public double kP = 0.0005;
         public double kI = 0.0;
         public double kD = 0.0;
     }

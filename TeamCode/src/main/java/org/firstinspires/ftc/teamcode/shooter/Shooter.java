@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
     double shooterVelocity;
 
     //TODO: temporary, remove this
-    public static int PIVOT_ANGLE = 0;
+    public static int PIVOT_ANGLE = -500;
 
     public Shooter(RobotCore robot) {
         this.robot = robot;
@@ -54,9 +54,10 @@ public class Shooter extends SubsystemBase {
 
     public void setupMotors() {
         pivot.stopAndResetEncoder();
-        pivot.setInverted(true);
+        pivot.setInverted(false);
         pivot.setPositionCoefficient(PIVOT.kP);
         pivot.setPositionTolerance(PIVOT.POSITION_TOLERANCE);
+        pivot.resetEncoder();
         pivot.setRunMode(Motor.RunMode.PositionControl);
         pivot.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
@@ -140,8 +141,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // The lower and upper bounds may need to swap if pivot is reversed
-        if (inShootingMode) pivotAngle = (int) MathFunctions.clamp(calculatePivotAngle(), 0, PIVOT.MAX_ANGLE);
+        if (inShootingMode) pivotAngle = (int) MathFunctions.clamp(calculatePivotAngle(), PIVOT.MAX_ANGLE, 0);
         else pivotAngle = 0;
 
         shooter.setVelocity(shooterVelocity);

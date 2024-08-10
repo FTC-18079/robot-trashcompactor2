@@ -87,7 +87,7 @@ public class RobotCore extends Robot {
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
-//        this.initialPose = initialPose;
+        this.initialPose = initialPose;
         Global.field.setRobotPose(initialPose);
 
         // Initialize subsystems
@@ -114,6 +114,7 @@ public class RobotCore extends Robot {
     private void setupOpMode(OpModeType type) {
         switch (type) {
             case TELEOP:
+                chassis.startTeleopDrive();
                 setDriveControls();
                 closeObjectDetection();
                 break;
