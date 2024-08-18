@@ -14,7 +14,7 @@ public class ShootCommand extends SequentialCommandGroup {
                 new ConditionalCommand(
                         // If in shooting mode
                         new SequentialCommandGroup(
-                            new WaitUntilCommand(shooter::isReadyToFire),
+                            //new WaitUntilCommand(shooter::isReadyToFire),
                             new InstantCommand(shooter::shoot),
                             new WaitCommand(300),
                             new InstantCommand(shooter::flickBack),

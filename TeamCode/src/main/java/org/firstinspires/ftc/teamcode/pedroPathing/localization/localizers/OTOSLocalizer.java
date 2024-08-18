@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing.localization.localizers;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -45,8 +44,8 @@ public class OTOSLocalizer extends Localizer {
      * This creates a new OTOSLocalizer from a HardwareMap, with a starting Pose at (0,0)
      * facing 0 heading.
      */
-    public OTOSLocalizer(HardwareMap hardwareMap) {
-        this(hardwareMap, new Pose());
+    public OTOSLocalizer() {
+        this(new Pose());
     }
 
     /**
@@ -55,10 +54,8 @@ public class OTOSLocalizer extends Localizer {
      *
      * @param setStartPose the Pose to start from
      */
-    public OTOSLocalizer(HardwareMap hMap, Pose setStartPose) {
-        // TODO: uncomment
-        // otos = RobotMap.getInstance().OTOS;
-        otos = hMap.get(SparkFunOTOS.class, "otos");
+    public OTOSLocalizer(Pose setStartPose) {
+        otos = RobotMap.getInstance().OTOS;
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);

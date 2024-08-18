@@ -20,6 +20,6 @@ public class TeleOpDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        chassis.setDrivePowers(y.getAsDouble(), x.getAsDouble(), rot.getAsDouble());
+        chassis.setDrivePowers(-y.getAsDouble(), x.getAsDouble(), -rot.getAsDouble());
     }
 }

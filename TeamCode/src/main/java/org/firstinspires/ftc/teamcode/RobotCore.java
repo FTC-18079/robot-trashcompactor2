@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.auto.RedForwardSequence;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.intake.Intake;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.shooter.commands.ShootCommand;
 import org.firstinspires.ftc.teamcode.shooter.commands.ShootingModeToggleCommand;
@@ -37,7 +38,7 @@ public class RobotCore extends Robot {
     Telemetry telemetry;
     GamepadEx driveController;
     GamepadEx manipController;
-    Pose2d initialPose;
+    Pose initialPose;
     ATVision atVision;
     ObjectDetection objectDetection;
 
@@ -65,7 +66,7 @@ public class RobotCore extends Robot {
         TELEOP, RED_FORWARD, BLUE_FORWARD
     }
 
-    public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose2d initialPose) {
+    public RobotCore(OpModeType type, HardwareMap hardwareMap, Telemetry telemetry, Gamepad gamePad1, Gamepad gamePad2, Pose initialPose) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         telemetry.addData("Status", "Initializing Hardware");
@@ -86,7 +87,7 @@ public class RobotCore extends Robot {
         this.driveController = new GamepadEx(gamePad1);
         this.manipController = new GamepadEx(gamePad2);
 
-//        this.initialPose = initialPose;
+        this.initialPose = initialPose;
         Global.field.setRobotPose(initialPose);
 
         // Initialize subsystems
@@ -113,6 +114,7 @@ public class RobotCore extends Robot {
     private void setupOpMode(OpModeType type) {
         switch (type) {
             case TELEOP:
+                chassis.startTeleopDrive();
                 setDriveControls();
                 closeObjectDetection();
                 break;
@@ -237,7 +239,7 @@ public class RobotCore extends Robot {
         this.telemetry.update();
     }
 
-    public Pose2d getPoseEstimate() {
+    public Pose getPoseEstimate() {
         return chassis.getPoseEstimate();
     }
 }

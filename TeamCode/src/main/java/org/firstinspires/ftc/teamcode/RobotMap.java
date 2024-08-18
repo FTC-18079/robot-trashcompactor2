@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+import java.util.List;
 
 public class RobotMap {
     private HardwareMap hMap;
@@ -66,11 +69,15 @@ public class RobotMap {
         PLATE_LEFT = hardwareMap.get(Servo.class, "plateLeft");
 
         PIVOT = new MotorEx(hardwareMap, "pivot");
-        SHOOTER = new MotorEx(hardwareMap, "shooter", 146.44, 1147.23);
+        SHOOTER = new MotorEx(hardwareMap, "shooter", 28.0, 6000.0);
         FLICK = hardwareMap.get(Servo.class, "flick");
         SEAL = hardwareMap.get(Servo.class, "seal");
 
         this.hMap = hardwareMap;
+    }
+
+    public List<LynxModule> getLynxModules() {
+        return hMap.getAll(LynxModule.class);
     }
 
     public int getMonitorId() {

@@ -9,11 +9,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.RobotMap;
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 
 import static org.firstinspires.ftc.teamcode.shooter.ShooterConstants.*;
 
 @Config
 public class Shooter extends SubsystemBase {
+    RobotCore robot;
     Telemetry telemetry;
     // Plate servos
     Servo plateLeft;
@@ -29,9 +32,10 @@ public class Shooter extends SubsystemBase {
     double shooterVelocity;
 
     //TODO: temporary, remove this
-    public static int PIVOT_ANGLE = 0;
+    public static int PIVOT_ANGLE = -500;
 
     public Shooter(RobotCore robot) {
+        this.robot = robot;
         this.telemetry = robot.getTelemetry();
 
         plateLeft = RobotMap.getInstance().PLATE_LEFT;
@@ -50,9 +54,10 @@ public class Shooter extends SubsystemBase {
 
     public void setupMotors() {
         pivot.stopAndResetEncoder();
-        pivot.setInverted(true);
+        pivot.setInverted(false);
         pivot.setPositionCoefficient(PIVOT.kP);
         pivot.setPositionTolerance(PIVOT.POSITION_TOLERANCE);
+        pivot.resetEncoder();
         pivot.setRunMode(Motor.RunMode.PositionControl);
         pivot.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
@@ -65,7 +70,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        flick.setPosition(0.2);
+        flick.setPosition(0.3);
     }
 
     public void flickBack() {
@@ -125,13 +130,18 @@ public class Shooter extends SubsystemBase {
     }
 
     // TODO: calc the pivot angle formula
+    // pivot will work off motor ticks rather than angle (for now)
     public int calculatePivotAngle() {
-        return (int) angleToTicks(PIVOT_ANGLE, pivot.getCPR());
+        // Calculate distance to goal
+        Pose pose = robot.getPoseEstimate();
+        double dist = MathFunctions.distance(pose, GOAL_POSE);
+
+        return (int) PIVOT_ANGLE;
     }
 
     @Override
     public void periodic() {
-        if (inShootingMode) pivotAngle = calculatePivotAngle();
+        if (inShootingMode) pivotAngle = (int) MathFunctions.clamp(calculatePivotAngle(), PIVOT.MAX_ANGLE, 0);
         else pivotAngle = 0;
 
         shooter.setVelocity(shooterVelocity);
@@ -141,7 +151,7 @@ public class Shooter extends SubsystemBase {
         telemetry.addData("In Shooting Mode", inShootingMode);
 
         // TODO: remove this, it's debug
-        telemetry.addData("Target shooter RPM", LAUNCHER.RPM);
+        telemetry.addData("Target shooter RPM", toRPM(shooterVelocity, shooter.getCPR()));
         telemetry.addData("Shooter RPM", toRPM(shooter.getCorrectedVelocity(), shooter.getCPR()));
         telemetry.addData("Shooter TPS", shooter.getCorrectedVelocity());
 

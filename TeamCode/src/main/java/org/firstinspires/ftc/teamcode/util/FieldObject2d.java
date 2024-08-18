@@ -2,9 +2,9 @@
 
 package org.firstinspires.ftc.teamcode.util;
 
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.trajectory.Trajectory;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.List;
 public class FieldObject2d {
     String name;
     double[] entry;
-    private final List<Pose2d> poses = new ArrayList<Pose2d>();
+    private final List<Pose> poses = new ArrayList<Pose>();
 
     FieldObject2d(String name) {
         this.name = name;
@@ -28,7 +28,7 @@ public class FieldObject2d {
      *
      * @param pose 2D pose
      */
-    public synchronized void setPose(Pose2d pose) {
+    public synchronized void setPose(Pose pose) {
         setPoses(pose);
     }
 
@@ -39,8 +39,8 @@ public class FieldObject2d {
      * @param yMeters Y location, in meters
      * @param rotation rotation
      */
-    public synchronized void setPose(double xMeters, double yMeters, Rotation2d rotation) {
-        setPose(new Pose2d(xMeters, yMeters, rotation));
+    public synchronized void setPose(double xMeters, double yMeters, double rotation) {
+        setPose(new Pose(xMeters, yMeters, rotation));
     }
 
     /**
@@ -48,9 +48,9 @@ public class FieldObject2d {
      *
      * @return 2D pose
      */
-    public synchronized Pose2d getPose() {
+    public synchronized Pose getPose() {
         if (this.poses.isEmpty()) {
-            return new Pose2d(0, 0, new Rotation2d(0));
+            return new Pose(0, 0, 0);
         }
         return this.poses.get(0);
     }
@@ -60,7 +60,7 @@ public class FieldObject2d {
      *
      * @param poses list of 2D poses
      */
-    public synchronized void setPoses(List<Pose2d> poses) {
+    public synchronized void setPoses(List<Pose> poses) {
         this.poses.clear();
         this.poses.addAll(poses);
     }
@@ -70,7 +70,7 @@ public class FieldObject2d {
      *
      * @param poses list of 2D poses
      */
-    public synchronized void setPoses(Pose2d... poses) {
+    public synchronized void setPoses(Pose... poses) {
         this.poses.clear();
         Collections.addAll(this.poses, poses);
     }
@@ -83,10 +83,10 @@ public class FieldObject2d {
     public synchronized void setTrajectory(Trajectory trajectory) {
         poses.clear();
         for (Trajectory.State state : trajectory.getStates()) {
-            poses.add(new Pose2d(
+            poses.add(new Pose(
                     state.poseMeters.getX(),
                     state.poseMeters.getY(),
-                    new Rotation2d(state.poseMeters.getHeading())
+                    state.poseMeters.getHeading()
             ));
         }
     }
@@ -96,7 +96,7 @@ public class FieldObject2d {
      *
      * @return list of 2D poses
      */
-    public synchronized List<Pose2d> getPoses() {
+    public synchronized List<Pose> getPoses() {
         return new ArrayList<>(poses);
     }
 }
