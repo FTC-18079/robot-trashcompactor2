@@ -78,11 +78,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void closeSeal() {
-        seal.setPosition(1);
+        seal.setPosition(SEAL.CLOSE_POS);
     }
 
     public void openSeal() {
-        seal.setPosition(0);
+        seal.setPosition(SEAL.OPEN_POS);
     }
 
     public void readyShooter() {

@@ -37,12 +37,19 @@ public class ShooterConstants {
         public double kI = 0.0;
         public double kD = 0.0;
     }
+
+    public static class Seal {
+        public double CLOSE_POS = 1.0;
+        public double OPEN_POS = 0.8;
+    }
+
     public static double GOAL_X = -72.0;
     public static double GOAL_Y = 48.0;
 
     public static Plate PLATE = new Plate();
     public static Launcher LAUNCHER = new Launcher();
     public static Pivot PIVOT = new Pivot();
+    public static Seal SEAL = new Seal();
     public static Pose GOAL_POSE = new Pose(GOAL_X, GOAL_Y);
 
     public static double toTicksPerSec(double rpm, double motorTicks) {
