@@ -40,7 +40,7 @@ public class RobotCore extends Robot {
     GamepadEx manipController;
     Pose initialPose;
     ATVision atVision;
-    ObjectDetection objectDetection;
+    ObjectDetection objectDetection = null;
 
     // Subsystems
     Chassis chassis;
@@ -80,7 +80,7 @@ public class RobotCore extends Robot {
 
         telemetry.addData("Status", "Initializing Object Detection");
         telemetry.update();
-        objectDetection = new ObjectDetection(this, Global.liveView);
+        if (type != OpModeType.TELEOP) objectDetection = new ObjectDetection(this, Global.liveView);
 
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
 
@@ -116,7 +116,6 @@ public class RobotCore extends Robot {
             case TELEOP:
                 chassis.startTeleopDrive();
                 setDriveControls();
-                closeObjectDetection();
                 break;
             case RED_FORWARD:
                 autoPath = new RedForwardSequence(chassis);
@@ -133,9 +132,12 @@ public class RobotCore extends Robot {
         // Drive command
         driveCommand = new TeleOpDriveCommand(
                 chassis,
-                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
-                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
-                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
+                () -> driveController.getLeftY(),
+                () -> driveController.getLeftX(),
+                () -> driveController.getRightX()
+//                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
+//                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
+//                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
         );
 
         // Toggle field centric
@@ -219,11 +221,12 @@ public class RobotCore extends Robot {
     }
 
     public PipelineIF.Randomization getRandomization() {
-        return objectDetection.getPosition();
+        if (objectDetection != null) return objectDetection.getPosition();
+        else return PipelineIF.Randomization.RIGHT;
     }
 
     public void closeObjectDetection() {
-        objectDetection.closeCamera();
+        if (objectDetection != null) objectDetection.closeCamera();
     }
 
     @Override

@@ -8,11 +8,11 @@ import java.util.function.DoubleSupplier;
 
 public class TeleOpDriveCommand extends CommandBase {
     private final Chassis chassis;
-    private DoubleSupplier x, y, rot;
-    public TeleOpDriveCommand(Chassis chassis, DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot) {
+    private DoubleSupplier fwd, strafe, rot;
+    public TeleOpDriveCommand(Chassis chassis, DoubleSupplier fwd, DoubleSupplier strafe, DoubleSupplier rot) {
         this.chassis = chassis;
-        this.x = x;
-        this.y = y;
+        this.fwd = fwd;
+        this.strafe = strafe;
         this.rot = rot;
 
         addRequirements(chassis);
@@ -20,6 +20,6 @@ public class TeleOpDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        chassis.setDrivePowers(-y.getAsDouble(), x.getAsDouble(), -rot.getAsDouble());
+        chassis.setDrivePowers(fwd.getAsDouble(), strafe.getAsDouble(), rot.getAsDouble());
     }
 }
