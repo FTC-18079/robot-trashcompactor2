@@ -130,12 +130,9 @@ public class RobotCore extends Robot {
         // Drive command
         driveCommand = new TeleOpDriveCommand(
                 chassis,
-                () -> driveController.getLeftY(),
-                () -> driveController.getLeftX(),
-                () -> driveController.getRightX()
-//                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
-//                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
-//                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
+                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
+                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
+                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
         );
 
         // Toggle field centric
