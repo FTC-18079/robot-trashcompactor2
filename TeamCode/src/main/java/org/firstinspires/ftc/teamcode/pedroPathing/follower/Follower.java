@@ -434,7 +434,7 @@ public class Follower {
             dashboardPoseTracker.update();
         }
 
-        if (!teleopDrive) {
+        if (!teleopDrive) { // Auto
             if (currentPath != null) {
                 if (holdingPosition) {
                     closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), 1);
@@ -490,14 +490,26 @@ public class Follower {
                     }
                 }
             }
-        } else {
+        } else { // Teleop
             velocities.add(poseUpdater.getVelocity());
             velocities.remove(velocities.get(velocities.size() - 1));
 
             calculateAveragedVelocityAndAcceleration();
 
-            drivePowers = driveVectorScaler.getDrivePowers(getCentripetalForceCorrection(), teleopHeadingVector, teleopDriveVector, poseUpdater.getPose().getHeading());
+//            drivePowers = driveVectorScaler.getDrivePowers(getCentripetalForceCorrection(), teleopHeadingVector, teleopDriveVector, poseUpdater.getPose().getHeading());
 
+            double[] wheelPowers = new double[4];
+            double fwd = teleopDriveVector.getXComponent();
+            double lat = teleopDriveVector.getYComponent();
+            double rot = teleopDriveValues[2];
+
+            double denominator = Math.max(Math.abs(fwd) + Math.abs(lat) + Math.abs(rot), 1);
+            wheelPowers[0] = (fwd + lat + rot) / denominator;
+            wheelPowers[1] = (fwd - lat + rot) / denominator;
+            wheelPowers[2] = (fwd - lat - rot) / denominator;
+            wheelPowers[3] = (fwd + lat - rot) / denominator;
+
+            drivePowers = wheelPowers;
             limitDrivePowers();
 
             for (int i = 0; i < motors.size(); i++) {

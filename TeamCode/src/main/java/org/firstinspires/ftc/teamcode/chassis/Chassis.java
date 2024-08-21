@@ -25,7 +25,7 @@ public class Chassis extends SubsystemBase {
      * @param rot the rotation movement input
      */
     public void setDrivePowers(double fwd, double str, double rot) {
-        drive.setTeleOpMovementVectors(fwd, -str, -rot, !isFieldCentric);
+        drive.setTeleOpMovementVectors(fwd, str, rot, !isFieldCentric);
     }
 
     public Pose getPoseEstimate() {
