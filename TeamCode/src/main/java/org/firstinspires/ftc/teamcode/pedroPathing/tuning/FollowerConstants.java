@@ -32,9 +32,9 @@ public class FollowerConstants {
 
     // Translational PIDF coefficients (don't use integral)
     public static CustomPIDFCoefficients translationalPIDFCoefficients = new CustomPIDFCoefficients(
-            0.1,
+            0.4,
             0,
-            0,
+            0.01,
             0);
 
     // Translational Integral
@@ -50,9 +50,9 @@ public class FollowerConstants {
 
     // Heading error PIDF coefficients
     public static CustomPIDFCoefficients headingPIDFCoefficients = new CustomPIDFCoefficients(
-            1,
+            3.2,
             0,
-            0,
+            0.1,
             0);
 
     // Feed forward constant added on to the heading PIDF
