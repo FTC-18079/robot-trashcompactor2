@@ -40,7 +40,7 @@ public class ShooterConstants {
 
     public static class Seal {
         public double CLOSE_POS = 1.0;
-        public double OPEN_POS = 0.8;
+        public double OPEN_POS = 0.85;
     }
 
     public static double GOAL_X = -72.0;
