@@ -5,22 +5,66 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
+import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 
 @Autonomous(name = "Test auto Blue", group = "Tests")
 public class TestAuto extends OpMode {
     private Follower follower;
+    private PipelineIF.Randomization randomization;
 
     // Start Pose
-    Pose startPose = new Pose(135.5, 84, Math.toRadians(180));
+    private Pose startPose = new Pose(135.5, 84, Math.toRadians(180));
     // Spike mark locations
-    Pose leftSpikeMark = new Pose(105.5, 83, Math.toRadians(270));
-    Pose centerSpikeMark = new Pose(107, 84, Math.toRadians(180));
-    Pose rightSpikeMark = new Pose(107, 105, Math.toRadians(270));
+    private Pose leftSpikeMark = new Pose(105.5, 83, Math.toRadians(270));
+    private Pose centerSpikeMark = new Pose(107, 84, Math.toRadians(180));
+    private Pose rightSpikeMark = new Pose(107, 105, Math.toRadians(270));
     // Backdrop locations
-    Pose leftBackdrop = new Pose(102, 121.75, Math.toRadians(90));
-    Pose centerBackdrop = new Pose(108, 121.75, Math.toRadians(90));
-    Pose rightBackdrop = new Pose(114.5, 121.75, Math.toRadians(90));
-    Pose dumpBackdrop = new Pose(108, 121.75, Math.toRadians(90));
+    private Pose leftBackdrop = new Pose(102, 121.75, Math.toRadians(90));
+    private Pose centerBackdrop = new Pose(108, 121.75, Math.toRadians(90));
+    private Pose rightBackdrop = new Pose(114.5, 121.75, Math.toRadians(90));
+    private Pose dumpBackdrop = new Pose(108, 121.75, Math.toRadians(90));
+    // Poses for paths
+    private Pose spikeMarkGoalPose, initialBackdropGoalPose, firstCycleStackPose, firstCycleGoalPose;
+    private Path scoreSpikeMark, initialScoreOnBackdrop, scoreSpikeMarkChosen;
+
+    public void setPathRandomization() {
+        switch (randomization) {
+            case LEFT:
+                spikeMarkGoalPose = new Pose(leftSpikeMark.getX(), leftSpikeMark.getY(), Math.toRadians(270));
+                initialBackdropGoalPose = new Pose(leftBackdrop.getX(), leftBackdrop.getY(), Math.toRadians(90));
+                firstCycleGoalPose = new Pose(dumpBackdrop.getX(), dumpBackdrop.getY(), Math.toRadians(90));
+                scoreSpikeMarkChosen = new Path(new BezierCurve(new Point(startPose), new Point(leftSpikeMark)));
+                break;
+            case CENTER:
+                spikeMarkGoalPose = new Pose(centerSpikeMark.getX(), centerSpikeMark.getY(), Math.toRadians(270));
+                initialBackdropGoalPose = new Pose(centerBackdrop.getX(), centerBackdrop.getY(), Math.toRadians(90));
+                firstCycleGoalPose = new Pose(dumpBackdrop.getX(), dumpBackdrop.getY(), Math.toRadians(90));
+                scoreSpikeMarkChosen = new Path(new BezierCurve(new Point(startPose), new Point(centerSpikeMark)));
+                break;
+            default:
+                spikeMarkGoalPose = new Pose(rightSpikeMark.getX(), rightSpikeMark.getY(), Math.toRadians(270));
+                initialBackdropGoalPose = new Pose(rightBackdrop.getX(), rightBackdrop.getY(), Math.toRadians(90));
+                firstCycleGoalPose = new Pose(dumpBackdrop.getX(), dumpBackdrop.getY(), Math.toRadians(90));
+                scoreSpikeMarkChosen = new Path(new BezierCurve(new Point(startPose), new Point(rightSpikeMark)));
+                break;
+        }
+    }
+
+    public void buildPaths() {
+        scoreSpikeMark = scoreSpikeMarkChosen;
+        scoreSpikeMark.setLinearHeadingInterpolation(startPose.getHeading(), spikeMarkGoalPose.getHeading());
+        scoreSpikeMark.setPathEndTimeoutConstraint(0);
+
+        initialScoreOnBackdrop = new Path(new BezierLine(new Point(spikeMarkGoalPose), new Point(initialBackdropGoalPose)));
+        initialScoreOnBackdrop.setLinearHeadingInterpolation(spikeMarkGoalPose.getHeading(), initialBackdropGoalPose.getHeading());
+        initialScoreOnBackdrop.setPathEndTimeoutConstraint(0);
+
+
+    }
 
     @Override
     public void init() {
