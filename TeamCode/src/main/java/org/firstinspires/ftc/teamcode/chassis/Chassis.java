@@ -6,16 +6,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
-import org.firstinspires.ftc.teamcode.pedroPathing.util.Drawing;
 
 public class Chassis extends SubsystemBase {
     Telemetry telemetry;
-    Follower drive;
-    boolean isFieldCentric;
+    Follower follower;
+    boolean isRobotCentric;
     public Chassis(RobotCore robot, Pose initialPose) {
         this.telemetry = robot.getTelemetry();
-        isFieldCentric = true;
-        drive = new Follower(initialPose);
+        isRobotCentric = false;
+        follower = new Follower(initialPose);
     }
 
     /**
@@ -25,36 +24,35 @@ public class Chassis extends SubsystemBase {
      * @param rot the rotation movement input
      */
     public void setDrivePowers(double fwd, double str, double rot) {
-        drive.setTeleOpMovementVectors(fwd, str, rot, !isFieldCentric);
+        follower.setTeleOpMovementVectors(fwd, str, rot, isRobotCentric);
     }
 
     public Pose getPoseEstimate() {
-        return drive.getPose();
+        return follower.getPose();
     }
 
-    public boolean isFieldCentric() {
-        return isFieldCentric;
+    public boolean isRobotCentric() {
+        return isRobotCentric;
     }
 
-    public void toggleFieldCentric() {
-        isFieldCentric = !isFieldCentric;
+    public void toggleRobotCentric() {
+        isRobotCentric = !isRobotCentric;
     }
 
     // Sets the robot's current heading to be the zero angle
     public void resetHeading() {
         Pose oldPose = getPoseEstimate();
-        drive.setPose(new Pose(oldPose.getX(), oldPose.getY(), 0));
+        follower.setPose(new Pose(oldPose.getX(), oldPose.getY(), 0));
     }
 
     public void startTeleopDrive() {
-        drive.startTeleopDrive();
+        follower.startTeleopDrive();
     }
 
     @Override
     public void periodic() {
-        drive.update();
-        Drawing.drawRobot(getPoseEstimate(), "#4CAF50");
-        telemetry.addData("Field centric", isFieldCentric);
+        follower.update();
+        telemetry.addData("Robot centric", isRobotCentric);
 //        telemetry.addData("Pose estimate", drive.pose.toString());
     }
 }

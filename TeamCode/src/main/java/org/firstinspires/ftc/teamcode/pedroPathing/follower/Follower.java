@@ -164,7 +164,6 @@ public class Follower {
         rightRear = RobotMap.getInstance().MOTOR_BR;
         rightFront = RobotMap.getInstance().MOTOR_FR;
 
-        // TODO: Make sure that this is the direction your motors need to be reversed in.
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -435,68 +434,82 @@ public class Follower {
             dashboardPoseTracker.update();
         }
 
-        if (!teleopDrive) {
-            if (holdingPosition) {
-                closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), 1);
+        if (!teleopDrive) { // Auto
+            if (currentPath != null) {
+                if (holdingPosition) {
+                    closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), 1);
 
-                drivePowers = driveVectorScaler.getDrivePowers(MathFunctions.scalarMultiplyVector(getTranslationalCorrection(), holdPointTranslationalScaling), MathFunctions.scalarMultiplyVector(getHeadingVector(), holdPointHeadingScaling), new Vector(), poseUpdater.getPose().getHeading());
-
-                limitDrivePowers();
-
-                for (int i = 0; i < motors.size(); i++) {
-                    motors.get(i).setPower(drivePowers[i]);
-                }
-            } else {
-                if (isBusy) {
-                    closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), BEZIER_CURVE_BINARY_STEP_LIMIT);
-
-                    if (followingPathChain) updateCallbacks();
-
-                    drivePowers = driveVectorScaler.getDrivePowers(getCorrectiveVector(), getHeadingVector(), getDriveVector(), poseUpdater.getPose().getHeading());
+                    drivePowers = driveVectorScaler.getDrivePowers(MathFunctions.scalarMultiplyVector(getTranslationalCorrection(), holdPointTranslationalScaling), MathFunctions.scalarMultiplyVector(getHeadingVector(), holdPointHeadingScaling), new Vector(), poseUpdater.getPose().getHeading());
 
                     limitDrivePowers();
 
                     for (int i = 0; i < motors.size(); i++) {
                         motors.get(i).setPower(drivePowers[i]);
                     }
-                }
-                if (currentPath.isAtParametricEnd()) {
-                    if (followingPathChain && chainIndex < currentPathChain.size() - 1) {
-                        // Not at last path, keep going
-                        breakFollowing();
-                        pathStartTimes[chainIndex] = System.currentTimeMillis();
-                        isBusy = true;
-                        followingPathChain = true;
-                        chainIndex++;
-                        currentPath = currentPathChain.getPath(chainIndex);
+                } else {
+                    if (isBusy) {
                         closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), BEZIER_CURVE_BINARY_STEP_LIMIT);
-                    } else {
-                        // At last path, run some end detection stuff
-                        // set isBusy to false if at end
-                        if (!reachedParametricPathEnd) {
-                            reachedParametricPathEnd = true;
-                            reachedParametricPathEndTime = System.currentTimeMillis();
-                        }
 
-                        if ((System.currentTimeMillis() - reachedParametricPathEndTime > currentPath.getPathEndTimeoutConstraint()) || (poseUpdater.getVelocity().getMagnitude() < currentPath.getPathEndVelocityConstraint() && MathFunctions.distance(poseUpdater.getPose(), closestPose) < currentPath.getPathEndTranslationalConstraint() && MathFunctions.getSmallestAngleDifference(poseUpdater.getPose().getHeading(), currentPath.getClosestPointHeadingGoal()) < currentPath.getPathEndHeadingConstraint())) {
-                            if (holdPositionAtEnd) {
-                                holdPositionAtEnd = false;
-                                holdPoint(new BezierPoint(currentPath.getLastControlPoint()), currentPath.getHeadingGoal(1));
-                            } else {
-                                breakFollowing();
+                        if (followingPathChain) updateCallbacks();
+
+                        drivePowers = driveVectorScaler.getDrivePowers(getCorrectiveVector(), getHeadingVector(), getDriveVector(), poseUpdater.getPose().getHeading());
+
+                        limitDrivePowers();
+
+                        for (int i = 0; i < motors.size(); i++) {
+                            motors.get(i).setPower(drivePowers[i]);
+                        }
+                    }
+                    if (currentPath.isAtParametricEnd()) {
+                        if (followingPathChain && chainIndex < currentPathChain.size() - 1) {
+                            // Not at last path, keep going
+                            breakFollowing();
+                            pathStartTimes[chainIndex] = System.currentTimeMillis();
+                            isBusy = true;
+                            followingPathChain = true;
+                            chainIndex++;
+                            currentPath = currentPathChain.getPath(chainIndex);
+                            closestPose = currentPath.getClosestPoint(poseUpdater.getPose(), BEZIER_CURVE_BINARY_STEP_LIMIT);
+                        } else {
+                            // At last path, run some end detection stuff
+                            // set isBusy to false if at end
+                            if (!reachedParametricPathEnd) {
+                                reachedParametricPathEnd = true;
+                                reachedParametricPathEndTime = System.currentTimeMillis();
+                            }
+
+                            if ((System.currentTimeMillis() - reachedParametricPathEndTime > currentPath.getPathEndTimeoutConstraint()) || (poseUpdater.getVelocity().getMagnitude() < currentPath.getPathEndVelocityConstraint() && MathFunctions.distance(poseUpdater.getPose(), closestPose) < currentPath.getPathEndTranslationalConstraint() && MathFunctions.getSmallestAngleDifference(poseUpdater.getPose().getHeading(), currentPath.getClosestPointHeadingGoal()) < currentPath.getPathEndHeadingConstraint())) {
+                                if (holdPositionAtEnd) {
+                                    holdPositionAtEnd = false;
+                                    holdPoint(new BezierPoint(currentPath.getLastControlPoint()), currentPath.getHeadingGoal(1));
+                                } else {
+                                    breakFollowing();
+                                }
                             }
                         }
                     }
                 }
             }
-        } else {
+        } else { // Teleop
             velocities.add(poseUpdater.getVelocity());
             velocities.remove(velocities.get(velocities.size() - 1));
 
             calculateAveragedVelocityAndAcceleration();
 
-            drivePowers = driveVectorScaler.getDrivePowers(getCentripetalForceCorrection(), teleopHeadingVector, teleopDriveVector, poseUpdater.getPose().getHeading());
+//            drivePowers = driveVectorScaler.getDrivePowers(getCentripetalForceCorrection(), teleopHeadingVector, teleopDriveVector, poseUpdater.getPose().getHeading());
 
+            double[] wheelPowers = new double[4];
+            double fwd = teleopDriveVector.getXComponent();
+            double lat = teleopDriveVector.getYComponent();
+            double rot = teleopDriveValues[2];
+
+            double denominator = Math.max(Math.abs(fwd) + Math.abs(lat) + Math.abs(rot), 1);
+            wheelPowers[0] = (fwd + lat + rot) / denominator;
+            wheelPowers[1] = (fwd - lat + rot) / denominator;
+            wheelPowers[2] = (fwd - lat - rot) / denominator;
+            wheelPowers[3] = (fwd + lat - rot) / denominator;
+
+            drivePowers = wheelPowers;
             limitDrivePowers();
 
             for (int i = 0; i < motors.size(); i++) {
@@ -535,7 +548,7 @@ public class Follower {
         teleopDriveVector.setOrthogonalComponents(teleopDriveValues[0], teleopDriveValues[1]);
         teleopDriveVector.setMagnitude(MathFunctions.clamp(teleopDriveVector.getMagnitude(), 0, 1));
 
-        if (robotCentric) {
+        if (!robotCentric) {
             teleopDriveVector.rotateVector(getPose().getHeading());
         }
 

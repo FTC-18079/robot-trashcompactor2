@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.pedroPathing.util.Drawing;
 import org.firstinspires.ftc.teamcode.util.Global;
 
 import java.lang.Math;
@@ -15,7 +16,7 @@ import java.lang.Math;
 public class TeleOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Pose initialPose = new Pose(12, -61.34, Math.toRadians(90)); // Global.field.getRobotPose();
+        Pose initialPose = new Pose(0, 0, 0); // Global.field.getRobotPose();
 
         // Init robot
         RobotCore robot = new RobotCore(
@@ -41,8 +42,8 @@ public class TeleOpMode extends LinearOpMode {
 
             // Draw robot
             TelemetryPacket packet = new TelemetryPacket();
-            packet.fieldOverlay().setStroke("#3F51B5");
-//            Drawing.drawRobot(packet.fieldOverlay(), robot.getPoseEstimate());
+            packet.fieldOverlay().setStroke("#4CAF50");
+            Drawing.drawRobotOnCanvas(packet.fieldOverlay(), robot.getPoseEstimate());
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }
 

@@ -6,11 +6,9 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.Robot;
-import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,7 +38,7 @@ public class RobotCore extends Robot {
     GamepadEx manipController;
     Pose initialPose;
     ATVision atVision;
-    ObjectDetection objectDetection;
+    ObjectDetection objectDetection = null;
 
     // Subsystems
     Chassis chassis;
@@ -80,7 +78,7 @@ public class RobotCore extends Robot {
 
         telemetry.addData("Status", "Initializing Object Detection");
         telemetry.update();
-        objectDetection = new ObjectDetection(this, Global.liveView);
+        if (type != OpModeType.TELEOP) objectDetection = new ObjectDetection(this, Global.liveView);
 
         FtcDashboard.getInstance().startCameraStream(atVision.stream, 15);
 
@@ -116,7 +114,6 @@ public class RobotCore extends Robot {
             case TELEOP:
                 chassis.startTeleopDrive();
                 setDriveControls();
-                closeObjectDetection();
                 break;
             case RED_FORWARD:
                 autoPath = new RedForwardSequence(chassis);
@@ -133,14 +130,17 @@ public class RobotCore extends Robot {
         // Drive command
         driveCommand = new TeleOpDriveCommand(
                 chassis,
-                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
-                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
-                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
+                () -> driveController.getLeftY(),
+                () -> driveController.getLeftX(),
+                () -> driveController.getRightX()
+//                () -> responseCurve(driveController.getLeftX(), DRIVE_SENSITIVITY),
+//                () -> responseCurve(driveController.getLeftY(), DRIVE_SENSITIVITY),
+//                () -> responseCurve(driveController.getRightX(), ROTATIONAL_SENSITIVITY)
         );
 
         // Toggle field centric
         driveController.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(chassis::toggleFieldCentric);
+                .whenPressed(chassis::toggleRobotCentric);
         // Reset robot heading
         driveController.getGamepadButton(GamepadKeys.Button.Y)
                 .whenPressed(chassis::resetHeading);
@@ -219,11 +219,12 @@ public class RobotCore extends Robot {
     }
 
     public PipelineIF.Randomization getRandomization() {
-        return objectDetection.getPosition();
+        if (objectDetection != null) return objectDetection.getPosition();
+        else return PipelineIF.Randomization.RIGHT;
     }
 
     public void closeObjectDetection() {
-        objectDetection.closeCamera();
+        if (objectDetection != null) objectDetection.closeCamera();
     }
 
     @Override
