@@ -6,11 +6,9 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.Robot;
-import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -142,7 +140,7 @@ public class RobotCore extends Robot {
 
         // Toggle field centric
         driveController.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(chassis::toggleFieldCentric);
+                .whenPressed(chassis::toggleRobotCentric);
         // Reset robot heading
         driveController.getGamepadButton(GamepadKeys.Button.Y)
                 .whenPressed(chassis::resetHeading);
