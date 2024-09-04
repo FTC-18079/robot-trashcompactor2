@@ -9,11 +9,14 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
+import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 import org.firstinspires.ftc.teamcode.util.vision.PipelineIF;
 
 @Autonomous(name = "Test auto Blue", group = "Tests")
 public class TestAuto extends OpMode {
     private Follower follower;
+    private int pathState, actionState;
+    Timer pathTimer, opmodeTimer;
     private PipelineIF.Randomization randomization;
 
     // Start Pose
@@ -62,8 +65,31 @@ public class TestAuto extends OpMode {
         initialScoreOnBackdrop = new Path(new BezierLine(new Point(spikeMarkGoalPose), new Point(initialBackdropGoalPose)));
         initialScoreOnBackdrop.setLinearHeadingInterpolation(spikeMarkGoalPose.getHeading(), initialBackdropGoalPose.getHeading());
         initialScoreOnBackdrop.setPathEndTimeoutConstraint(0);
+    }
 
+    public void autonomousPathUpdate() {
+        switch (pathState) {
+            case 10:
+                follower.followPath(scoreSpikeMark);
+                setPathState(11);
+                break;
+        }
+    }
 
+    public void autonomousActionUpdate() {
+
+    }
+
+    public void setPathState(int pState) {
+        pathState = pState;
+        pathTimer.resetTimer();
+        autonomousPathUpdate();
+    }
+
+    public void setActionState(int aState) {
+        actionState = aState;
+        pathTimer.resetTimer();
+        autonomousActionUpdate();
     }
 
     @Override
