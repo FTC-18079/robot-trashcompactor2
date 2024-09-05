@@ -19,7 +19,10 @@ import org.firstinspires.ftc.teamcode.auto.RedForwardSequence;
 import org.firstinspires.ftc.teamcode.chassis.Chassis;
 import org.firstinspires.ftc.teamcode.chassis.commands.TeleOpDriveCommand;
 import org.firstinspires.ftc.teamcode.intake.Intake;
+import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.shooter.commands.ShootCommand;
 import org.firstinspires.ftc.teamcode.shooter.commands.ShootingModeToggleCommand;
@@ -222,6 +225,10 @@ public class RobotCore extends Robot {
 
     public void closeObjectDetection() {
         if (objectDetection != null) objectDetection.closeCamera();
+    }
+
+    public Follower getFollower() {
+        return chassis.getFollower();
     }
 
     @Override

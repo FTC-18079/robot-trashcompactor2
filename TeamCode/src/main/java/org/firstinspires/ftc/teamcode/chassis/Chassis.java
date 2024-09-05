@@ -6,6 +6,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotCore;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 
 public class Chassis extends SubsystemBase {
     Telemetry telemetry;
@@ -43,6 +45,10 @@ public class Chassis extends SubsystemBase {
     public void resetHeading() {
         Pose oldPose = getPoseEstimate();
         follower.setPose(new Pose(oldPose.getX(), oldPose.getY(), 0));
+    }
+
+    public Follower getFollower() {
+        return follower;
     }
 
     public void startTeleopDrive() {
